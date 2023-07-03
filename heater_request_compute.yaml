@@ -1,0 +1,67 @@
+blueprint:
+  name: Room heating request compute
+  description: Compute heating requested based on current T° and setpoint °C, and fake climate calibration to force valve
+  domain: automation
+  source_url: https://github.com/francois09/homeassistant/blueprints/heater_request_compute.yaml
+  input:
+    climate_valve:
+      name: Climate valve
+      selector:
+        entity:
+          domain: climate
+    selected_temp:
+      name: Selected T° setpoint storage
+      selector:
+        entity:
+          domain: input_number
+    current_temp:
+      name: Current T°
+      selector:
+        entity:
+          domain: sensor
+    request_heater:
+      name: Request heater switch
+      selector:
+        entity:
+          domain: input_boolean
+
+mode: single
+max_exceeded: silent
+
+variables:
+  local_climate_valve: !input climate_valve
+  local_current_temp: !input current_temp
+  local_selected_temp: !input selected_temp
+
+trigger:
+- platform: state
+  entity_id: !input current_temp
+- platform: state
+  entity_id: !input selected_temp
+
+action:
+- choose:
+  - conditions:
+    - condition: template
+      value_template: '{{ states(local_current_temp)|float < states(local_selected_temp) |float }}'
+    sequence:
+    - service: input_boolean.turn_on
+      data: {}
+      target:
+        entity_id: !input request_heater
+    - service: mqtt.publish
+      data:
+        topic: "zigbee2mqtt/{{state_attr(local_climate_valve,'friendly_name')}}/set/local_temperature_calibration"
+        payload: "-1.5"
+  - conditions:
+    - condition: template
+      value_template: '{{ states(local_current_temp)|float >= states(local_selected_temp) |float }}'
+    sequence:
+    - service: input_boolean.turn_off
+      data: {}
+      target:
+        entity_id: !input request_heater
+    - service: mqtt.publish
+      data:
+        topic: "zigbee2mqtt/{{state_attr(local_climate_valve,'friendly_name')}}/set/local_temperature_calibration"
+        payload: "0"

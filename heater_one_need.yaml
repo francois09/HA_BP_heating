@@ -1,0 +1,50 @@
+blueprint:
+  name: Heating system should start
+  description: Heating system should start because at least one room need heating
+  domain: automation
+  source_url: https://github.com/francois09/homeassistant/blueprints/heater_one_need.yaml
+  input:
+    request_heater:
+      name: Request heater switch
+      selector:
+        entity:
+          domain: input_boolean
+          multiple: true
+    heater_switch:
+      name: Heater switch
+      selector:
+        entity:
+          domain: switch
+
+mode: single
+max_exceeded: silent
+
+trigger:
+- platform: state
+  entity_id: !input request_heater
+
+condition:
+- condition: state
+  entity_id: input_boolean.mode_hiver
+  state: 'on'
+
+action:
+- choose:
+  - conditions:
+    - condition: or
+      conditions:
+      - condition: state
+        entity_id: !input request_heater
+        state: 'on'
+    sequence:
+    - type: turn_on
+      entity_id: !input heater_switch
+  - conditions:
+    - condition: and
+      conditions:
+      - condition: state
+        entity_id: !input request_heater
+        state: 'off'
+    sequence:
+    - type: turn_off
+      entity_id: !input heater_switch

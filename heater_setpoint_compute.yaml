@@ -1,0 +1,127 @@
+blueprint:
+  name: Room heating setpoint compute
+  description: Compute heating setpoint based on planning °C, Confort & Eco °C and manually set °C
+  domain: automation
+  source_url: https://github.com/francois09/homeassistant/blueprints/heater_setpoint_compute.yaml
+  input:
+    climate_valve:
+      name: Climate valve
+      selector:
+        entity:
+          domain: climate
+    comfort_temp:
+      name: Comfort T° of the room
+      selector:
+        entity:
+          domain: input_number
+    eco_temp:
+      name: Eco T° of the room
+      selector:
+        entity:
+          domain: input_number
+    schedule:
+      name: Planning of the room
+      selector:
+        entity:
+          domain: schedule
+    manual_boolean:
+      name: Manual mode switch
+      selector:
+        entity:
+          domain: input_boolean
+    computing_boolean:
+      name: Currently computing setpoint
+      selector:
+        entity:
+          domain: input_boolean
+    setpoint:
+      name: Selected °C setpoint
+      selector:
+        entity:
+          domain: input_number
+
+mode: single
+max_exceeded: silent
+
+variables:
+  local_comfort_temp: !input comfort_temp
+  local_eco_temp: !input eco_temp
+  local_setpoint: !input setpoint
+
+trigger:
+- platform: state
+  entity_id: !input comfort_temp
+- platform: state
+  entity_id: !input eco_temp
+- platform: state
+  entity_id: !input schedule
+- platform: state
+  entity_id: !input manual_boolean
+
+action:
+- choose:
+  - conditions:
+    - condition: state
+      entity_id: !input manual_boolean
+      state: 'off'
+    # - condition: state
+    #   entity_id: !input computing_boolean
+    #   state: 'off'
+    - condition: state
+      entity_id: !input schedule
+      state: 'on'
+    sequence:
+    - service: input_boolean.turn_on
+      data: {}
+      target:
+        entity_id: !input computing_boolean
+    - service: input_number.set_value
+      data_template:
+        value: '{{ states(local_comfort_temp) }}'
+        entity_id: !input setpoint
+    - service: climate.set_temperature
+      data_template:
+        temperature: '{{ states(local_setpoint) }}'
+        entity_id: !input climate_valve
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 10
+        milliseconds: 0
+    - service: input_boolean.turn_off
+      data: {}
+      target:
+        entity_id: !input computing_boolean
+  - conditions:
+    - condition: state
+      entity_id: !input manual_boolean
+      state: 'off'
+    # - condition: state
+    #   entity_id: !input computing_boolean
+    #   state: 'off'
+    - condition: state
+      entity_id: !input schedule
+      state: 'off'
+    sequence:
+    - service: input_boolean.turn_on
+      data: {}
+      target:
+        entity_id: !input computing_boolean
+    - service: input_number.set_value
+      data_template:
+        value: '{{ states(local_eco_temp) }}'
+        entity_id: !input setpoint
+    - service: climate.set_temperature
+      data_template:
+        temperature: '{{ states(local_setpoint) }}'
+        entity_id: !input climate_valve
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 10
+        milliseconds: 0
+    - service: input_boolean.turn_off
+      data: {}
+      target:
+        entity_id: !input computing_boolean
+

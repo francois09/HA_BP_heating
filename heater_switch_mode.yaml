@@ -1,0 +1,99 @@
+blueprint:
+  name: Room heating mode switching
+  description: React to manual or automatic setup on thermostatic valve
+  domain: automation
+  source_url: https://github.com/francois09/homeassistant/blueprints/heater_switch_mode.yaml
+  input:
+    climate_valve:
+      name: Climate valve
+      selector:
+        entity:
+          domain: climate
+    manual_boolean:
+      name: Manual mode switch
+      selector:
+        entity:
+          domain: input_boolean
+    computing_boolean:
+      name: Currently computing setpoint
+      selector:
+        entity:
+          domain: input_boolean
+    selected_temp:
+      name: Selected °C setpoint
+      selector:
+        entity:
+          domain: input_number
+
+mode: single
+max_exceeded: silent
+
+variables:
+  local_climate_valve: !input climate_valve
+
+trigger:
+- platform: state
+  entity_id: !input climate_valve
+  attribute: temperature
+- platform: state
+  entity_id: !input climate_valve
+  attribute: preset_mode
+  to: auto
+
+condition:
+  - condition: state
+    entity_id: !input computing_boolean
+    state: 'off'
+
+action:
+- choose:
+  - conditions:
+    - condition: state
+      entity_id: !input climate_valve
+      attribute: preset_mode
+      state: manual
+    sequence:
+    - service: input_boolean.turn_on
+      data: {}
+      target:
+        entity_id: !input computing_boolean
+    - service: input_boolean.turn_on
+      data: {}
+      target:
+        entity_id: !input manual_boolean
+    - service: input_number.set_value
+      data_template:
+        value: "{% set temp = state_attr(local_climate_valve,'temperature')|float %}{{ temp }}"
+        entity_id: !input selected_temp
+    - service: input_boolean.turn_off
+      data: {}
+      target:
+        entity_id: !input computing_boolean
+  - conditions:
+    - condition: state
+      entity_id: !input climate_valve
+      attribute: preset_mode
+      state: auto
+    sequence:
+    - service: input_boolean.turn_on
+      data: {}
+      target:
+        entity_id: !input computing_boolean
+    - service: climate.set_preset_mode
+      data:
+        preset_mode: manual
+      target:
+        entity_id: !input climate_valve
+    - service: input_boolean.turn_off
+      data: {}
+      target:
+        entity_id: !input manual_boolean
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 10
+        milliseconds: 0
+    - service: input_boolean.turn_off
+      data: {}
+      target:
+        entity_id: !input computing_boolean
