@@ -2,7 +2,7 @@ blueprint:
   name: Room heating request compute
   description: Compute heating requested based on current T° and setpoint °C, and fake climate calibration to force valve
   domain: automation
-  source_url: https://github.com/francois09/homeassistant/blueprints/heater_request_compute.yaml
+  source_url: https://github.com/francois09/HA_blueprints/heater_request_compute.yaml
   input:
     climate_valve:
       name: Climate valve
@@ -24,6 +24,11 @@ blueprint:
       selector:
         entity:
           domain: input_boolean
+    winter_mode_boolean:
+      name: Winter switch
+      selector:
+        entity:
+          domain: input_boolean
 
 mode: single
 max_exceeded: silent
@@ -38,6 +43,11 @@ trigger:
   entity_id: !input current_temp
 - platform: state
   entity_id: !input selected_temp
+
+condition:
+  - condition: state
+    entity_id: !input winter_mode_boolean
+    state: 'on'
 
 action:
 - choose:
