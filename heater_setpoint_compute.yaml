@@ -2,7 +2,7 @@ blueprint:
   name: Room heating setpoint compute
   description: Compute heating setpoint based on planning °C, Confort & Eco °C and manually set °C
   domain: automation
-  source_url: https://github.com/francois09/homeassistant/blueprints/heater_setpoint_compute.yaml
+  source_url: https://github.com/francois09/HA_blueprints/heater_setpoint_compute.yaml
   input:
     climate_valve:
       name: Climate valve
@@ -39,6 +39,11 @@ blueprint:
       selector:
         entity:
           domain: input_number
+    winter_mode_boolean:
+      name: Winter switch
+      selector:
+        entity:
+          domain: input_boolean
 
 mode: single
 max_exceeded: silent
@@ -57,6 +62,11 @@ trigger:
   entity_id: !input schedule
 - platform: state
   entity_id: !input manual_boolean
+
+condition:
+  - condition: state
+    entity_id: !input winter_mode_boolean
+    state: 'on'
 
 action:
 - choose:

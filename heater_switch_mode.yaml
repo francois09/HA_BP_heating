@@ -2,7 +2,7 @@ blueprint:
   name: Room heating mode switching
   description: React to manual or automatic setup on thermostatic valve
   domain: automation
-  source_url: https://github.com/francois09/homeassistant/blueprints/heater_switch_mode.yaml
+  source_url: https://github.com/francois09/HA_blueprints/heater_switch_mode.yaml
   input:
     climate_valve:
       name: Climate valve
@@ -24,6 +24,11 @@ blueprint:
       selector:
         entity:
           domain: input_number
+    winter_mode_boolean:
+      name: Winter switch
+      selector:
+        entity:
+          domain: input_boolean
 
 mode: single
 max_exceeded: silent
@@ -42,8 +47,12 @@ trigger:
 
 condition:
   - condition: state
+    entity_id: !input winter_mode_boolean
+    state: 'on'
+  - condition: state
     entity_id: !input computing_boolean
     state: 'off'
+
 
 action:
 - choose:
