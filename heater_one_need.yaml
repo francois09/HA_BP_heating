@@ -27,6 +27,8 @@ max_exceeded: silent
 trigger:
 - platform: state
   entity_id: !input request_heater
+- platform: state
+  entity_id: !input winter_mode_boolean
 
 condition:
   - condition: state
@@ -42,8 +44,10 @@ action:
         entity_id: !input request_heater
         state: 'on'
     sequence:
-    - type: turn_on
-      entity_id: !input heater_switch
+    - service: switch.turn_on
+      data: {}
+      target:
+        entity_id: !input heater_switch
   - conditions:
     - condition: and
       conditions:
@@ -51,5 +55,7 @@ action:
         entity_id: !input request_heater
         state: 'off'
     sequence:
-    - type: turn_off
-      entity_id: !input heater_switch
+    - service: switch.turn_off
+      data: {}
+      target:
+        entity_id: !input heater_switch
