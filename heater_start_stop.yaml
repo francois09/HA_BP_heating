@@ -1,0 +1,59 @@
+blueprint:
+  name: Heating system operationnal or not
+  description: Heating system must be set on or off depending on winter mode switch
+  domain: automation
+  source_url: https://github.com/francois09/HA_blueprints/heater_start_stop.yaml
+  input:
+    climate_valve:
+      name: Climate valve
+      selector:
+        entity:
+          domain: climate
+          multiple: true
+    winter_mode_boolean:
+      name: Winter switch
+      selector:
+        entity:
+          domain: input_boolean
+
+mode: single
+max_exceeded: silent
+
+trigger:
+- platform: state
+  entity_id: !input winter_mode_boolean
+
+condition:
+  - condition: state
+    entity_id: !input winter_mode_boolean
+    state: 'on'
+
+action:
+- choose:
+  - conditions:
+    - condition: state
+      entity_id: !input winter_mode_boolean
+      state: 'on'
+    sequence:
+    - service: climate.turn_on
+      data: {}
+      target:
+        entity_id: !input climate_valve
+    - service: lock.unlock
+      data: {}
+      target:
+        entity_id: !input climate_valve
+
+  - conditions:
+    - condition: state
+      entity_id: !input winter_mode_boolean
+      state: 'off'
+    sequence:
+    - service: climate.turn_off
+      data: {}
+      target:
+        entity_id: !input climate_valve
+    - service: lock.lock
+      data: {}
+      target:
+        entity_id: !input climate_valve
