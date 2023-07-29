@@ -74,6 +74,11 @@ action:
       data_template:
         value: "{% set temp = state_attr(local_climate_valve,'temperature')|float %}{{ temp }}"
         entity_id: !input selected_temp
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 10
+        milliseconds: 0
     - service: input_boolean.turn_off
       data: {}
       target:
