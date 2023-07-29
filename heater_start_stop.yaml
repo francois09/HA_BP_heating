@@ -23,10 +23,10 @@ trigger:
 - platform: state
   entity_id: !input winter_mode_boolean
 
-condition:
-  - condition: state
-    entity_id: !input winter_mode_boolean
-    state: 'on'
+# condition:
+#   - condition: state
+#     entity_id: !input winter_mode_boolean
+#     state: 'on'
 
 action:
 - choose:
