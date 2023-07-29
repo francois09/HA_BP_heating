@@ -10,6 +10,12 @@ blueprint:
         entity:
           domain: climate
           multiple: true
+    valve_child_lock:
+      name: Valve child lock
+      selector:
+        entity:
+          domain: lock
+          multiple: true
     winter_mode_boolean:
       name: Winter switch
       selector:
@@ -35,11 +41,11 @@ action:
       entity_id: !input winter_mode_boolean
       state: 'on'
     sequence:
-    - service: climate.turn_on
+    - service: lock.unlock
       data: {}
       target:
-        entity_id: !input climate_valve
-    - service: lock.unlock
+        entity_id: !input valve_child_lock
+    - service: climate.turn_on
       data: {}
       target:
         entity_id: !input climate_valve
@@ -56,4 +62,4 @@ action:
     - service: lock.lock
       data: {}
       target:
-        entity_id: !input climate_valve
+        entity_id: !input valve_child_lock
