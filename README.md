@@ -38,3 +38,10 @@ This blueprint compute the correct setpoint based on the room schedule and the p
 [![Open your Home Assistant instance and show the blueprint import dialog with a specific blueprint pre-filled.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fraw.githubusercontent.com%2Ffrancois09%2FHA_blueprints%2Fmain%2Fheater_switch_mode.yaml)
 
 This blueprint take into account a manual change on the Climate valve, or the Auto setting to modify setpoint.
+
+### Heater Winter mode management
+
+[![Open your Home Assistant instance and show the blueprint import dialog with a specific blueprint pre-filled.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Ffrancois09%2FHA_blueprints%2Fmain%2Fheater_start_stop.yaml)
+
+This blueprint is the winter mode heating management system. It turn off and lock every climate valve to preserve battery during non-heating period.
+
