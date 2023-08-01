@@ -1,6 +1,6 @@
 # homeassistant
 
-This repository contains blueprints for managing heater system, and parts of configuration yaml files
+This repository contains blueprints (for managing heater system for now)
 
 ## Principle
 
