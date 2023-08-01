@@ -7,6 +7,7 @@ This repository contains blueprints (for managing heater system for now)
 1. Each room is autonomous, and have helpers for their properties
 2. Each room should have a climate valve, and a T° sensor
 3. A global blueprint is in charge of collecting rooms needs to decide to start heater/climate
+4. A global boolean (winter_mode) is in charge to determine if it's ... winter :)
 
 ## How it works
 
@@ -14,6 +15,8 @@ Based on triggers, each room will compute the T° setpoint, and if necessary act
 saying it needs heating.
 
 Another automation will decide to start or stop the heating system if rooms need it or no.
+
+On non-winter mode, all climate valves will be set to "off" and also "child lock" mode, to preserve battery.
 
 ### Heater start/stop global script
 
