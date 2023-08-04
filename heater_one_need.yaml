@@ -38,11 +38,11 @@ condition:
 action:
 - choose:
   - conditions:
-    - condition: or
+    - condition: not
       conditions:
       - condition: state
         entity_id: !input request_heater
-        state: 'on'
+        state: 'off'
     sequence:
     - service: switch.turn_on
       data: {}
