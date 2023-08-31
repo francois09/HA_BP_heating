@@ -38,6 +38,15 @@ condition:
 action:
 - choose:
   - conditions:
+    - condition: state
+      entity_id: !input winter_mode_boolean
+      state: 'off'
+    sequence:
+    - service: switch.turn_off
+      data: {}
+      target:
+        entity_id: !input heater_switch
+  - conditions:
     - condition: not
       conditions:
       - condition: state
