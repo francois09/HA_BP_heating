@@ -62,8 +62,6 @@ trigger:
   entity_id: !input schedule
 - platform: state
   entity_id: !input manual_boolean
-- platform: state
-  entity_id: !input winter_mode_boolean
 
 condition:
   - condition: state
@@ -76,9 +74,6 @@ action:
     - condition: state
       entity_id: !input manual_boolean
       state: 'off'
-    # - condition: state
-    #   entity_id: !input computing_boolean
-    #   state: 'off'
     - condition: state
       entity_id: !input schedule
       state: 'on'
@@ -108,9 +103,6 @@ action:
     - condition: state
       entity_id: !input manual_boolean
       state: 'off'
-    # - condition: state
-    #   entity_id: !input computing_boolean
-    #   state: 'off'
     - condition: state
       entity_id: !input schedule
       state: 'off'

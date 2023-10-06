@@ -21,6 +21,18 @@ blueprint:
       selector:
         entity:
           domain: input_boolean
+    setpoint_automation:
+      name: Setpoint compute automation
+      selector:
+        entity:
+          domain: automation
+          multiple: true
+    request_automation:
+      name: Request evaluate automation
+      selector:
+        entity:
+          domain: automation
+          multiple: true
 
 mode: single
 max_exceeded: silent
@@ -28,11 +40,6 @@ max_exceeded: silent
 trigger:
 - platform: state
   entity_id: !input winter_mode_boolean
-
-# condition:
-#   - condition: state
-#     entity_id: !input winter_mode_boolean
-#     state: 'on'
 
 action:
 - choose:
@@ -49,6 +56,24 @@ action:
       data: {}
       target:
         entity_id: !input climate_valve
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 10
+        milliseconds: 0
+    - service: automation.trigger
+      data: {}
+      target:
+        entity_id: !input setpoint_automation
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 5
+        milliseconds: 0
+    - service: automation.trigger
+      data: {}
+      target:
+        entity_id: !input request_automation
 
   - conditions:
     - condition: state

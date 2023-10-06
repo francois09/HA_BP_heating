@@ -43,8 +43,6 @@ trigger:
   entity_id: !input current_temp
 - platform: state
   entity_id: !input selected_temp
-- platform: state
-  entity_id: !input winter_mode_boolean
 
 condition:
   - condition: state

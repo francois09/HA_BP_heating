@@ -44,8 +44,6 @@ trigger:
   entity_id: !input climate_valve
   attribute: preset_mode
   to: auto
-- platform: state
-  entity_id: !input winter_mode_boolean
 
 condition:
   - condition: state
