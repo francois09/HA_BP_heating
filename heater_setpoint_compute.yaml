@@ -44,6 +44,11 @@ blueprint:
       selector:
         entity:
           domain: input_boolean
+    occupancy_boolean:
+      name: Occupancy
+      selector:
+        entity:
+          domain: input_boolean
 
 mode: queued
 max_exceeded: silent
@@ -62,6 +67,8 @@ trigger:
   entity_id: !input schedule
 - platform: state
   entity_id: !input manual_boolean
+- platform: state
+  entity_id: !input occupancy_boolean
 
 condition:
   - condition: state
@@ -72,10 +79,41 @@ action:
 - choose:
   - conditions:
     - condition: state
+      entity_id: !input occupancy_boolean
+      state: 'off'
+    sequence:
+    - service: input_boolean.turn_on
+      data: {}
+      target:
+        entity_id: !input computing_boolean
+    - service: input_number.set_value
+      data_template:
+        value: '{{ states(local_eco_temp) }}'
+        entity_id: !input setpoint
+    - service: climate.set_temperature
+      data_template:
+        temperature: '{{ states(local_setpoint) }}'
+        entity_id: !input climate_valve
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 10
+        milliseconds: 0
+    - service: input_boolean.turn_off
+      data: {}
+      target:
+        entity_id: !input computing_boolean
+
+
+  - conditions:
+    - condition: state
       entity_id: !input manual_boolean
       state: 'off'
     - condition: state
       entity_id: !input schedule
+      state: 'on'
+    - condition: state
+      entity_id: !input occupancy_boolean
       state: 'on'
     sequence:
     - service: input_boolean.turn_on
