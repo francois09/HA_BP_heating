@@ -14,17 +14,18 @@ blueprint:
       selector:
         entity:
           domain: lock
-          multiple: true
     inside_aperture_sensor:
       name: Inside aperture
       selector:
         entity:
           domain: binary_sensor
+          multiple: true
     outside_aperture_sensor:
       name: Outside aperture
       selector:
         entity:
           domain: binary_sensor
+          multiple: true
     trigging_timer:
       name: Timer to trigger event
       selector:
