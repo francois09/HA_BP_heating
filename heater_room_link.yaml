@@ -1,0 +1,167 @@
+blueprint:
+  name: Room link status
+  description: React to door/windows sensors for setting up link of a room
+  domain: automation
+  source_url: https://github.com/francois09/HA_blueprints/heater_room_link.yaml
+  input:
+    climate_valve:
+      name: Climate valve
+      selector:
+        entity:
+          domain: climate
+    valve_child_lock:
+      name: Valve child lock
+      selector:
+        entity:
+          domain: lock
+          multiple: true
+    inside_aperture_sensor:
+      name: Inside aperture
+      selector:
+        entity:
+          domain: binary_sensor
+    outside_aperture_sensor:
+      name: Outside aperture
+      selector:
+        entity:
+          domain: binary_sensor
+    trigging_timer:
+      name: Timer to trigger event
+      selector:
+        entity:
+          domain: timer
+    room_link_select:
+      name: Room link status
+      selector:
+        entity:
+          domain: input_select
+    winter_mode_boolean:
+      name: Winter switch
+      selector:
+        entity:
+          domain: input_boolean
+
+mode: restart
+max_exceeded: silent
+
+# variables:
+#   local_climate_valve: !input climate_valve
+
+trigger:
+- platform: state
+  entity_id: !input trigging_timer
+  to: idle
+  id: TriggeredByTimer
+- platform: state
+  entity_id: !input inside_aperture_sensor
+- platform: state
+  entity_id: !input outside_aperture_sensor
+
+condition:
+  - condition: state
+    entity_id: !input winter_mode_boolean
+    state: 'on'
+
+action:
+- choose:
+  ### Started by something else than timer
+  - conditions:
+    - condition: not
+      conditions:
+        - condition: trigger
+          id:
+            - TriggeredByTimer
+    sequence:
+      - service: timer.start
+        data:
+          duration: '0:03:00'
+        target:
+          entity_id: !input trigging_timer
+      
+  ### Started by timer, both aperture are open -> Set room link to 'Both'
+  - conditions:
+    - condition: trigger
+      id:
+        - TriggeredByTimer
+    - condition: state
+      entity_id: !input inside_aperture_sensor
+      state: 'on'
+    - condition: state
+      entity_id: !input outside_aperture_sensor
+      state: 'on'
+    sequence:
+    - service: input_select.select_option
+      data: 'Both'
+      target:
+        entity_id: !input room_link_select
+    # - service: input_boolean.turn_on
+    #   data: {}
+    #   target:
+    #     entity_id: !input shutdown_heater_boolean
+      
+  ### Started by timer, outside aperture are open -> stop and lock valve
+  - conditions:
+    - condition: trigger
+      id:
+        - TriggeredByTimer
+    - condition: state
+      entity_id: !input inside_aperture_sensor
+      state: 'off'
+    - condition: state
+      entity_id: !input outside_aperture_sensor
+      state: 'on'
+    sequence:
+    - service: climate.turn_off
+      data: {}
+      target:
+        entity_id: !input climate_valve
+    - service: lock.lock
+      data: {}
+      target:
+        entity_id: !input valve_child_lock
+    - service: input_select.select_option
+      data: 'Outside'
+      target:
+        entity_id: !input room_link_select
+
+  ### Started by timer, inside aperture are open -> unlock and start valve
+  - conditions:
+    - condition: trigger
+      id:
+        - TriggeredByTimer
+    - condition: state
+      entity_id: !input inside_aperture_sensor
+      state: 'on'
+    - condition: state
+      entity_id: !input outside_aperture_sensor
+      state: 'off'
+    sequence:
+    - service: lock.unlock
+      data: {}
+      target:
+        entity_id: !input valve_child_lock
+    - service: climate.turn_on
+      data: {}
+      target:
+        entity_id: !input climate_valve
+    - service: input_select.select_option
+      data: 'Inside'
+      target:
+        entity_id: !input room_link_select
+
+  ### Started by timer, none aperture are open
+  - conditions:
+    - condition: trigger
+      id:
+        - TriggeredByTimer
+    - condition: state
+      entity_id: !input inside_aperture_sensor
+      state: 'off'
+    - condition: state
+      entity_id: !input outside_aperture_sensor
+      state: 'off'
+    sequence:
+    - service: input_select.select_option
+      data: 'None'
+      target:
+        entity_id: !input room_link_select
