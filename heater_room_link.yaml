@@ -92,7 +92,8 @@ action:
       state: 'on'
     sequence:
     - service: input_select.select_option
-      data: 'Both'
+      data:
+        option: 'Both'
       target:
         entity_id: !input room_link_select
     # - service: input_boolean.turn_on
@@ -121,7 +122,8 @@ action:
       target:
         entity_id: !input valve_child_lock
     - service: input_select.select_option
-      data: 'Outside'
+      data:
+        option: 'Outside'
       target:
         entity_id: !input room_link_select
 
@@ -146,7 +148,8 @@ action:
       target:
         entity_id: !input climate_valve
     - service: input_select.select_option
-      data: 'Inside'
+      data:
+        option: 'Inside'
       target:
         entity_id: !input room_link_select
 
@@ -163,6 +166,7 @@ action:
       state: 'off'
     sequence:
     - service: input_select.select_option
-      data: 'None'
+      data:
+        option: 'None'
       target:
         entity_id: !input room_link_select
