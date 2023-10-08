@@ -91,6 +91,14 @@ action:
       entity_id: !input outside_aperture_sensor
       state: 'on'
     sequence:
+    - service: lock.unlock
+      data: {}
+      target:
+        entity_id: !input valve_child_lock
+    - service: climate.turn_on
+      data: {}
+      target:
+        entity_id: !input climate_valve
     - service: input_select.select_option
       data:
         option: 'Both'
@@ -165,6 +173,14 @@ action:
       entity_id: !input outside_aperture_sensor
       state: 'off'
     sequence:
+    - service: lock.unlock
+      data: {}
+      target:
+        entity_id: !input valve_child_lock
+    - service: climate.turn_on
+      data: {}
+      target:
+        entity_id: !input climate_valve
     - service: input_select.select_option
       data:
         option: 'None'
