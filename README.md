@@ -42,6 +42,12 @@ This blueprint compute the correct setpoint based on the room schedule and the p
 
 This blueprint take into account a manual change on the Climate valve, or the Auto setting to modify setpoint.
 
+### Heater room link management
+
+[![Open your Home Assistant instance and show the blueprint import dialog with a specific blueprint pre-filled.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fraw.githubusercontent.com%2Ffrancois09%2FHA_blueprints%2Fmain%2Fheater_room_link.yaml)
+
+This blueprint use the doors/windows status to determine if a room is linked to Inside/Outside/Both/None. When linked Outside, it stop and lock climate valve. It also setup a link helper to decide if we have to shutdown heating system or not.
+
 ### Heater Winter mode management
 
 [![Open your Home Assistant instance and show the blueprint import dialog with a specific blueprint pre-filled.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Ffrancois09%2FHA_blueprints%2Fmain%2Fheater_start_stop.yaml)
