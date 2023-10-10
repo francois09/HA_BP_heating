@@ -17,9 +17,9 @@ saying it needs heating.
 The rooms are also able to determine if they're linked to inside, outside, both or none. Depending on link,
 room climate valve can be set to off, or whole heating system can be stopped.
 
--+-
+
 Room Link | Action taken
--+-
+---|---
 Inside | Nothing special (Valve reset to unlocked and started)
 Outside | Valve is closed and stopped
 Both | Flag setup for shutdown global heater (Valve reset to unlocked and started)
