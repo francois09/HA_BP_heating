@@ -28,9 +28,9 @@ mode: single
 max_exceeded: silent
 
 trigger:
-- platform: device
+- platform: state
   entity_id: !input motion_sensor
-- platform: device
+- platform: state
   entity_id: !input light_device
 
 action:
