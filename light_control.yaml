@@ -1,6 +1,6 @@
 blueprint:
   name: Light control
-  description: Control light using daylight, occupancy and switch
+  description: Control light based on daylight, cloud covering, occupancy and switch
   domain: automation
   source_url: https://github.com/francois09/HA_blueprints/light_control.yaml
   input:
@@ -21,15 +21,47 @@ blueprint:
       default: True
       selector:
         boolean:
+    is_bedroom:
+      name: Is this a bedroom
+      description: Is the room a sleeping room ?
+      default: False
+      selector:
+        boolean:
 
 mode: single
 max_exceeded: silent
 
+#
+# The light must follow these rules:
+#
+# - Sunrise-60:
+#   - bedroom -> Set night mode off
+# - Press switch when light is off:
+#   - before sunset+60 after sunrise-60 (day): -> Turn on
+#   - after sunset+60 before sunrise-60 (night): -> Turn on 10%
+# - Press switch when light is on:
+#   - before 22h -> Turn off
+#   - after 22h -> Turn off / Set night mode on
+# - No motion detected -> Turn off
+# - Motion detected:
+#   - before sunset+60 after sunrise-60 (day):
+#     - no window -> Turn on
+#     - window
+#       - cloud cover > 60% -> Turn on
+#   - after sunset+60 before 22h (evening):
+#     - Turn on 10%
+#   - after 22h before sunrise-60 (night):
+#     - not bedroom -> Turn on 10%
+#     - bedroom:
+#       - nigth mode off -> Turn on 10%
+#
+
+
 trigger:
 - platform: state
   entity_id: !input motion_sensor
-# - platform: state
-#   entity_id: !input light_device
+- platform: state
+  entity_id: !input light_device
 
 action:
 - choose:
@@ -39,11 +71,13 @@ action:
       state: 'off'
     sequence:
     - service: light.turn_off
-      target: !input light_device
+      target:
+        entity_id: !input light_device
   - conditions:
     - condition: state
       entity_id: !input motion_sensor
       state: 'on'
     sequence:
     - service: light.turn_on
-      target: !input light_device
+      target:
+        entity_id: !input light_device
