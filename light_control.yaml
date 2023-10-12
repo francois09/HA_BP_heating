@@ -37,4 +37,15 @@ action:
     - service: light.turn_off
       data:
         entity_id: "{{ local_light_device.entity_id }}"
+        device_id: "{{ local_light_device.device_id }}"
+        brightness: 0
+  - conditions:
+    - condition: state
+      entity_id: !input motion_sensor
+      state: 'motion'
+    sequence:
+    - service: light.turn_on
+      data:
+        entity_id: "{{ local_light_device.entity_id }}"
+        device_id: "{{ local_light_device.device_id }}"
         brightness: 100
