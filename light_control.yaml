@@ -9,20 +9,19 @@ blueprint:
       selector:
         entity:
           domain: binary_sensor
+          device_class: motion
     light_device:
       name: Light management device
       selector:
-        entity:
-          domain: light
+        target:
+          entity:
+            domain: light
     is_window:
       name: Is there a window in the room
       description: Is there a window, allowing external light to enter ?
       default: True
       selector:
         boolean:
-
-variables:
-  local_light_device: !input light_device
 
 mode: single
 max_exceeded: silent
@@ -38,21 +37,14 @@ action:
   - conditions:
     - condition: state
       entity_id: !input motion_sensor
-      state: 'is_no_motion'
+      state: 'off'
     sequence:
     - service: light.turn_off
-      data: {}
-      target:
-        entity_id: "{{ local_light_device.entity_id }}"
-        device_id: "{{ local_light_device.device_id }}"
+      target: !input light_device
   - conditions:
     - condition: state
       entity_id: !input motion_sensor
-      state: 'motion'
+      state: 'on'
     sequence:
     - service: light.turn_on
-      data:
-        brightness: 100
-      target:
-        entity_id: "{{ local_light_device.entity_id }}"
-        device_id: "{{ local_light_device.device_id }}"
+      target: !input light_device
