@@ -15,6 +15,9 @@ blueprint:
         entity:
           domain: light
 
+variables:
+  light_entity: "{{ light_device.entity_id }}"
+
 mode: single
 max_exceeded: silent
 
@@ -32,6 +35,6 @@ action:
       state: 'is_no_motion'
     sequence:
     - service: light.turn_off
-      data: {}
-      target:
-        entity_id: !input light_device
+      data:
+        entity_id: "{{ light_entity }}"
+        brightness: 100
