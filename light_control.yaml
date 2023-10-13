@@ -55,16 +55,26 @@ max_exceeded: silent
 #     - bedroom:
 #       - nigth mode off -> Turn on 10%
 #
+# But steps by steps. For now, actions are:
+# - Turn off when no motion detected
+# - Turn on 100% when motion, daytime, and no window
+# - Turn on 10% when motion, nighttime
 
 
 trigger:
 - platform: state
   entity_id: !input motion_sensor
+  id: trigger_by_motion
 - platform: state
   entity_id: !input light_device
+  id: trigger_by_light
 
 action:
 - choose:
+
+  #
+  # No motion
+  # -> Turn off the light
   - conditions:
     - condition: state
       entity_id: !input motion_sensor
@@ -73,11 +83,64 @@ action:
     - service: light.turn_off
       target:
         entity_id: !input light_device
+
+  #
+  # Motion during the day, and for no_window rooms
+  # -> Turn on the light 100%
   - conditions:
     - condition: state
       entity_id: !input motion_sensor
       state: 'on'
+    - condition: trigger
+      id: triggered_by_motion
+    - condition: state
+      entity_id: !input light_device
+      state: 'off'
+    - condition: sun
+      before: sunset
+      after: sunrise
+      # after_offset: '-60'
+      # before_offset: '-60'
+    - condition: state
+      entity_id: !input is_window
+      state: 'off'
     sequence:
     - service: light.turn_on
       target:
         entity_id: !input light_device
+      data:
+        brightness: 100
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 2
+        milliseconds: 0
+
+  #
+  # Motion during the night
+  # -> Turn on the light 10%
+  - conditions:
+    - condition: state
+      entity_id: !input motion_sensor
+      state: 'on'
+    - condition: trigger
+      id: triggered_by_motion
+    - condition: state
+      entity_id: !input light_device
+      state: 'off'
+    - condition: sun
+      before: sunrise
+      after: sunset
+      # after_offset: '-60'
+      # before_offset: '-60'
+    sequence:
+    - service: light.turn_on
+      target:
+        entity_id: !input light_device
+      data:
+        brightness: 10
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 2
+        milliseconds: 0
