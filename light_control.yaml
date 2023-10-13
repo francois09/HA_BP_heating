@@ -31,29 +31,35 @@ blueprint:
 mode: single
 max_exceeded: silent
 
+variables:
+  is_window: !input is_window
+  is_bedroom: !input is_bedroom
+
 #
 # The light must follow these rules:
 #
-# - Sunrise-60:
-#   - bedroom -> Set night mode off
-# - Press switch when light is off:
-#   - before sunset+60 after sunrise-60 (day): -> Turn on
-#   - after sunset+60 before sunrise-60 (night): -> Turn on 10%
-# - Press switch when light is on:
-#   - before 22h -> Turn off
-#   - after 22h -> Turn off / Set night mode on
-# - No motion detected -> Turn off
-# - Motion detected:
-#   - before sunset+60 after sunrise-60 (day):
-#     - no window -> Turn on
-#     - window
-#       - cloud cover > 60% -> Turn on
-#   - after sunset+60 before 22h (evening):
-#     - Turn on 10%
-#   - after 22h before sunrise-60 (night):
-#     - not bedroom -> Turn on 10%
-#     - bedroom:
-#       - nigth mode off -> Turn on 10%
+#     - Sunrise-60:
+#       - bedroom -> Set night mode off
+#     - Press switch when light is off:
+#       - before sunset+60 after sunrise-60 (day): -> Turn on
+#       - after sunset+60 before sunrise-60 (night): -> Turn on 10%
+#     - Press switch when light is on:
+#       - before 22h -> Turn off / Set manual mode on
+#       - after 22h -> Turn off / Set night mode on
+#  *  - No motion detected:
+#         - Turn off
+#         - Set manual mode off
+#     - Motion detected:
+#  *    - before sunset+60 after sunrise-60 (day):
+#  *      - no window -> Turn on
+#  *      - window
+#           - cloud cover > 60% -> Turn on
+#  *<   - after sunset+60 before 22h (evening):
+#  *      - Turn on 10%
+#       - after 22h before sunrise-60 (night):
+#         - not bedroom -> Turn on 10%
+#         - bedroom:
+#           - nigth mode off -> Turn on 10%
 #
 # But steps by steps. For now, actions are:
 # - Turn off when no motion detected
@@ -79,6 +85,9 @@ action:
     - condition: state
       entity_id: !input motion_sensor
       state: 'off'
+    - condition: trigger
+      id:
+        - trigger_by_motion
     sequence:
     - service: light.turn_off
       target:
@@ -92,18 +101,18 @@ action:
       entity_id: !input motion_sensor
       state: 'on'
     - condition: trigger
-      id: triggered_by_motion
+      id:
+        - trigger_by_motion
     - condition: state
       entity_id: !input light_device
       state: 'off'
     - condition: sun
       before: sunset
       after: sunrise
-      # after_offset: '-60'
-      # before_offset: '-60'
-    - condition: state
-      entity_id: !input is_window
-      state: 'off'
+      # after_offset: '-1:00:00'
+      # before_offset: '-1:00:00'
+    - condition: template
+      value_template: "{{ not is_window }}"
     sequence:
     - service: light.turn_on
       target:
@@ -117,22 +126,25 @@ action:
         milliseconds: 0
 
   #
-  # Motion during the night
+  # Motion during the night, and not a bedroom
   # -> Turn on the light 10%
   - conditions:
     - condition: state
       entity_id: !input motion_sensor
       state: 'on'
     - condition: trigger
-      id: triggered_by_motion
+      id:
+        - trigger_by_motion
     - condition: state
       entity_id: !input light_device
       state: 'off'
     - condition: sun
       before: sunrise
       after: sunset
-      # after_offset: '-60'
-      # before_offset: '-60'
+      # after_offset: '-1:00:00'
+      # before_offset: '-1:00:00'
+    - condition: template
+      value_template: "{{ not is_bedroom }}"
     sequence:
     - service: light.turn_on
       target:
