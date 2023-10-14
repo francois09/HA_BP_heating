@@ -42,7 +42,7 @@ variables:
 #       - bedroom -> Set night mode off
 #     - Press switch when light is off:
 #       - before sunset+60 after sunrise-60 (day): -> Turn on
-#       - after sunset+60 before sunrise-60 (night): -> Turn on 10%
+#       - after sunset+60 before sunrise-60 (night): -> Turn on N%
 #     - Press switch when light is on:
 #       - before 22h -> Turn off / Set manual mode on
 #       - after 22h -> Turn off / Set night mode on
@@ -55,16 +55,16 @@ variables:
 #  *      - window
 #           - cloud cover > 60% -> Turn on
 #  *<   - after sunset+60 before 22h (evening):
-#  *      - Turn on 10%
+#  *      - Turn on N%
 #       - after 22h before sunrise-60 (night):
-#         - not bedroom -> Turn on 10%
+#         - not bedroom -> Turn on N%
 #         - bedroom:
-#           - nigth mode off -> Turn on 10%
+#           - nigth mode off -> Turn on N%
 #
 # But steps by steps. For now, actions are:
 # - Turn off when no motion detected
 # - Turn on 100% when motion, daytime, and no window
-# - Turn on 10% when motion, nighttime
+# - Turn on N% when motion, nighttime
 
 
 trigger:
@@ -118,7 +118,7 @@ action:
       target:
         entity_id: !input light_device
       data:
-        brightness: 100
+        brightness_pct: 100
     - delay:
         hours: 0
         minutes: 0
@@ -127,7 +127,7 @@ action:
 
   #
   # Motion during the night, and not a bedroom
-  # -> Turn on the light 10%
+  # -> Turn on the light N%
   - conditions:
     - condition: state
       entity_id: !input motion_sensor
@@ -150,7 +150,7 @@ action:
       target:
         entity_id: !input light_device
       data:
-        brightness: 10
+        brightness_pct: 3
     - delay:
         hours: 0
         minutes: 0
