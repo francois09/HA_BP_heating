@@ -27,6 +27,28 @@ blueprint:
       default: False
       selector:
         boolean:
+    day_brightness:
+      name: Daylight brightness percent
+      description: Brightness to set when daylight or blind room
+      default: 100
+      selector:
+        number:
+          min: 0
+          max: 100
+          unit_of_measurement: "%"
+          mode: slider
+          step: 1
+    night_brightness:
+      name: Night brightness percent
+      description: Brightness to set when it's night
+      default: 2
+      selector:
+        number:
+          min: 0
+          max: 100
+          unit_of_measurement: "%"
+          mode: slider
+          step: 1
 
 mode: single
 max_exceeded: silent
@@ -34,15 +56,17 @@ max_exceeded: silent
 variables:
   is_window: !input is_window
   is_bedroom: !input is_bedroom
+  day_brightness: !input day_brightness
+  night_brightness: !input night_brightness
 
 #
 # The light must follow these rules:
 #
 #     - Sunrise-60:
 #       - bedroom -> Set night mode off
-#     - Press switch when light is off:
-#       - before sunset+60 after sunrise-60 (day): -> Turn on
-#       - after sunset+60 before sunrise-60 (night): -> Turn on N%
+#  *  - Press switch when light is off:
+#  *    - before sunset+60 after sunrise-60 (day): -> Turn on
+#  *    - after sunset+60 before sunrise-60 (night): -> Turn on N%
 #     - Press switch when light is on:
 #       - before 22h -> Turn off / Set manual mode on
 #       - after 22h -> Turn off / Set night mode on
@@ -77,6 +101,50 @@ trigger:
 
 action:
 - choose:
+
+  #
+  # Light on (before sunset, after sunrise == Day)
+  # -> Turn on the light
+  - conditions:
+    - condition: state
+      entity_id: !input light_device
+      state: 'on'
+    - condition: trigger
+      id:
+        - trigger_by_light
+    - condition: sun
+      before: sunset
+      after: sunrise
+      # after_offset: '-1:00:00'
+      # before_offset: '-1:00:00'
+    sequence:
+    - service: light.turn_on
+      target:
+        entity_id: !input light_device
+      data:
+        brightness_pct: "{{ day_brightness}}"
+
+  #
+  # Light on (after sunset, before sunrise == Night)
+  # -> Turn on the light at N%
+  - conditions:
+    - condition: state
+      entity_id: !input light_device
+      state: 'on'
+    - condition: trigger
+      id:
+        - trigger_by_light
+    - condition: sun
+      before: sunrise
+      after: sunset
+      # after_offset: '-1:00:00'
+      # before_offset: '-1:00:00'
+    sequence:
+    - service: light.turn_on
+      target:
+        entity_id: !input light_device
+      data:
+        brightness_pct: "{{ night_brightness}}"
 
   #
   # No motion
@@ -118,7 +186,7 @@ action:
       target:
         entity_id: !input light_device
       data:
-        brightness_pct: 100
+        brightness_pct: "{{ day_brightness}}"
     - delay:
         hours: 0
         minutes: 0
@@ -150,7 +218,7 @@ action:
       target:
         entity_id: !input light_device
       data:
-        brightness_pct: 3
+        brightness_pct: "{{ night_brightness}}"
     - delay:
         hours: 0
         minutes: 0
