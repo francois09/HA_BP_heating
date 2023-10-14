@@ -71,14 +71,13 @@ action:
       - condition: state
         entity_id: !input request_heater
         state: 'off'
-    # Et aucun n'est en Both...
-    - condition: and
-      conditions:
-        - condition: not
-          conditions:
-          - condition: state
-            entity_id: !input room_link_select
-            state: 'Both'
+    # Et aucun n'est en Both... not (one is in Both)
+    - condition: not
+        conditions:
+        - condition: state
+          entity_id: !input room_link_select
+          state: 'Both'
+          match: any
     sequence:
     - service: switch.turn_on
       data: {}
