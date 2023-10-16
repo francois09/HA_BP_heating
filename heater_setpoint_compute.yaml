@@ -77,6 +77,10 @@ condition:
 
 action:
 - choose:
+
+  #
+  # When no occupancy, set eco temp
+  #
   - conditions:
     - condition: state
       entity_id: !input occupancy_boolean
@@ -104,7 +108,35 @@ action:
       target:
         entity_id: !input computing_boolean
 
+  #
+  # When manual, send local setpoint to the valve (used in case of restarting valve for example)
+  #
+  - conditions:
+    - condition: state
+      entity_id: !input manual_boolean
+      state: 'on'
+    sequence:
+    - service: input_boolean.turn_on
+      data: {}
+      target:
+        entity_id: !input computing_boolean
+    - service: climate.set_temperature
+      data_template:
+        temperature: '{{ states(local_setpoint) }}'
+        entity_id: !input climate_valve
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 10
+        milliseconds: 0
+    - service: input_boolean.turn_off
+      data: {}
+      target:
+        entity_id: !input computing_boolean
 
+  #
+  # When auto, and schedule is on, set comfort t°
+  #
   - conditions:
     - condition: state
       entity_id: !input manual_boolean
@@ -137,6 +169,10 @@ action:
       data: {}
       target:
         entity_id: !input computing_boolean
+
+  #
+  # When auto, and schedule is off, set eco t°
+  #
   - conditions:
     - condition: state
       entity_id: !input manual_boolean
@@ -166,4 +202,3 @@ action:
       data: {}
       target:
         entity_id: !input computing_boolean
-
