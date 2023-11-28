@@ -46,7 +46,6 @@ blueprint:
       selector:
         entity:
           domain: automation
-          multiple: true
     freeze_temp_number:
       name: Freeze temperature value
       description: Minimal off freeze T°

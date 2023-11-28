@@ -55,11 +55,10 @@ action:
       target:
         entity_id: !input heater_switch
   - conditions:
-    - condition: or
-      conditions:
-      - condition: state
-        entity_id: !input room_link_select
-        state: 'Both'
+    - condition: state
+      entity_id: !input room_link_select
+      state: 'Both'
+      match: any
     sequence:
     - service: switch.turn_off
       data: {}
