@@ -41,11 +41,26 @@ blueprint:
       selector:
         entity:
           domain: input_boolean
+    setpoint_automation:
+      name: Setpoint compute automation
+      selector:
+        entity:
+          domain: automation
+          multiple: true
+    freeze_temp_number:
+      name: Freeze temperature value
+      description: Minimal off freeze T°
+      default: 5
+      selector:
+        number:
+          min: 1
+          max: 10
 
 mode: restart
 max_exceeded: silent
 
-# variables:
+variables:
+  local_freeze_temp: !input freeze_temp_number
 #   local_climate_valve: !input climate_valve
 
 trigger:
@@ -104,6 +119,10 @@ action:
         data: {}
         target:
           entity_id: !input climate_valve
+      - service: automation.trigger
+        data: {}
+        target:
+          entity_id: !input setpoint_automation
     - service: input_select.select_option
       data:
         option: 'Both'
@@ -126,6 +145,11 @@ action:
       entity_id: !input outside_aperture_sensor
       state: 'on'
     sequence:
+    - service: climate.set_temperature
+      data_template:
+        temperature: '{{ local_freeze_temp }}'
+        entity_id: !input climate_valve
+
     - service: climate.turn_off
       data: {}
       target:
@@ -165,6 +189,10 @@ action:
         data: {}
         target:
           entity_id: !input climate_valve
+      - service: automation.trigger
+        data: {}
+        target:
+          entity_id: !input setpoint_automation
     - service: input_select.select_option
       data:
         option: 'Inside'
@@ -196,6 +224,10 @@ action:
         data: {}
         target:
           entity_id: !input climate_valve
+      - service: automation.trigger
+        data: {}
+        target:
+          entity_id: !input setpoint_automation
     - service: input_select.select_option
       data:
         option: 'None'
