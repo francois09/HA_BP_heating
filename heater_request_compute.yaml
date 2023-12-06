@@ -24,6 +24,11 @@ blueprint:
       selector:
         entity:
           domain: input_boolean
+    room_link_select:
+      name: Room link status
+      selector:
+        entity:
+          domain: input_select
     winter_mode_boolean:
       name: Winter switch
       selector:
@@ -48,6 +53,13 @@ condition:
   - condition: state
     entity_id: !input winter_mode_boolean
     state: 'on'
+  - or:
+      - condition: state
+        entity_id: !input room_link_select
+        state: 'Inside'
+      - condition: state
+        entity_id: !input room_link_select
+        state: 'None'
 
 action:
 - choose:

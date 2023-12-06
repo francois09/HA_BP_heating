@@ -41,6 +41,11 @@ blueprint:
       selector:
         entity:
           domain: input_boolean
+    computing_boolean:
+      name: Currently computing setpoint
+      selector:
+        entity:
+          domain: input_boolean
     setpoint_automation:
       name: Setpoint compute automation
       selector:
@@ -144,6 +149,10 @@ action:
       entity_id: !input outside_aperture_sensor
       state: 'on'
     sequence:
+    - service: input_boolean.turn_on
+      data: {}
+      target:
+        entity_id: !input computing_boolean
     - service: climate.set_temperature
       data_template:
         temperature: '{{ local_freeze_temp }}'
@@ -162,6 +171,15 @@ action:
         option: 'Outside'
       target:
         entity_id: !input room_link_select
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 10
+        milliseconds: 0
+    - service: input_boolean.turn_off
+      data: {}
+      target:
+        entity_id: !input computing_boolean
 
   ### Started by timer, inside aperture are open -> unlock and start valve
   - conditions:
