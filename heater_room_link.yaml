@@ -51,6 +51,11 @@ blueprint:
       selector:
         entity:
           domain: automation
+    request_heater:
+      name: Request heater switch
+      selector:
+        entity:
+          domain: input_boolean
     freeze_temp_number:
       name: Freeze temperature value
       description: Minimal off freeze T°
@@ -157,7 +162,6 @@ action:
       data_template:
         temperature: '{{ local_freeze_temp }}'
         entity_id: !input climate_valve
-
     - service: climate.turn_off
       data: {}
       target:
@@ -166,6 +170,11 @@ action:
       data: {}
       target:
         entity_id: !input valve_child_lock
+    - service: input_boolean.turn_off
+      data: {}
+      target:
+        entity_id: !input request_heater
+
     - service: input_select.select_option
       data:
         option: 'Outside'
