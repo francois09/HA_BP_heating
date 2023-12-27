@@ -74,7 +74,7 @@ action:
     - service: mqtt.publish
       data:
         topic: "zigbee2mqtt/{{state_attr(local_climate_valve,'friendly_name')}}/set/local_temperature_calibration"
-        payload: "-1.5"
+        payload: "-2.5"
   - conditions:
     - condition: template
       value_template: '{{ states(local_current_temp)|float >= states(local_selected_temp) |float }}'
