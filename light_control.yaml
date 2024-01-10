@@ -189,11 +189,11 @@ action:
         entity_id: !input light_device
       data:
         brightness_pct: "{{ day_brightness}}"
-    - delay:
-        hours: 0
-        minutes: 0
-        seconds: 2
-        milliseconds: 0
+    # - delay:
+    #     hours: 0
+    #     minutes: 0
+    #     seconds: 2
+    #     milliseconds: 0
 
   #
   # Motion during the night, and not a bedroom
@@ -224,11 +224,11 @@ action:
         entity_id: !input light_device
       data:
         brightness_pct: "{{ day_brightness}}"
-    - delay:
-        hours: 0
-        minutes: 0
-        seconds: 2
-        milliseconds: 0
+    # - delay:
+    #     hours: 0
+    #     minutes: 0
+    #     seconds: 2
+    #     milliseconds: 0
 
   #
   # Motion during the night, and not a bedroom
@@ -259,8 +259,8 @@ action:
         entity_id: !input light_device
       data:
         brightness_pct: "{{ night_brightness}}"
-    - delay:
-        hours: 0
-        minutes: 0
-        seconds: 2
-        milliseconds: 0
+    # - delay:
+    #     hours: 0
+    #     minutes: 0
+    #     seconds: 2
+    #     milliseconds: 0
