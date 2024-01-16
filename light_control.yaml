@@ -65,11 +65,11 @@ trigger:
 - platform: state
   entity_id: !input motion_sensor
   id: trigger_by_motion
-  to: on
+  to: 'on'
 - platform: state
   entity_id: !input motion_sensor
   id: trigger_by_nomotion
-  to: off
+  to: 'off'
 - platform: state
   entity_id: !input light_device
   id: trigger_by_light
