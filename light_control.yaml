@@ -10,6 +10,7 @@ blueprint:
         entity:
           domain: binary_sensor
           device_class: motion
+          multiple: true
     light_device:
       name: Light management device
       selector:
@@ -59,42 +60,16 @@ variables:
   day_brightness: !input day_brightness
   night_brightness: !input night_brightness
 
-#
-# The light must follow these rules:
-#
-#     - Sunrise-60:
-#       - bedroom -> Set night mode off
-#  *  - Press switch when light is off:
-#  *<   - before sunset+2:00 after sunrise-1:00 (day): -> Turn on
-#  *<   - after sunset+2:00 before sunrise-1:00 (night): -> Turn on N%
-#     - Press switch when light is on:
-#       - before 22h -> Turn off / Set manual mode on
-#       - after 22h -> Turn off / Set night mode on
-#  *  - No motion detected:
-#         - Turn off
-#         - Set manual mode off
-#     - Motion detected: (if light is off...)
-#  *<   - before sunset+2:00 after sunrise-1:00 (day):
-#  *<     - no window -> Turn on
-#  *<     - window
-#           - cloud cover > 60% -> Turn on
-#  *<   - after sunset+2:00 before 22h (evening):
-#  *      - Turn on N%
-#       - after 22h before sunrise-1:00 (night):
-#         - not bedroom -> Turn on N%
-#         - bedroom:
-#           - nigth mode off -> Turn on N%
-#
-# But steps by steps. For now, actions are:
-# - Turn off when no motion detected
-# - Turn on 100% when motion, daytime, and no window
-# - Turn on N% when motion, nighttime
-
 
 trigger:
 - platform: state
   entity_id: !input motion_sensor
   id: trigger_by_motion
+  to: on
+- platform: state
+  entity_id: !input motion_sensor
+  id: trigger_by_nomotion
+  to: off
 - platform: state
   entity_id: !input light_device
   id: trigger_by_light
@@ -151,13 +126,14 @@ action:
   #
   # No motion
   # -> Turn off the light
+  # (in case of multiple sensors, we need to check if ALL motion sensors are OFF )
   - conditions:
-    - condition: state
-      entity_id: !input motion_sensor
-      state: 'off'
+    # - condition: state
+    #   entity_id: !input motion_sensor
+    #   state: 'off'
     - condition: trigger
       id:
-        - trigger_by_motion
+        - trigger_by_nomotion
     sequence:
     - service: light.turn_off
       target:
@@ -167,9 +143,9 @@ action:
   # Motion during the day, and for no_window rooms
   # -> Turn on the light 100%
   - conditions:
-    - condition: state
-      entity_id: !input motion_sensor
-      state: 'on'
+    # - condition: state
+    #   entity_id: !input motion_sensor
+    #   state: 'on'
     - condition: trigger
       id:
         - trigger_by_motion
@@ -199,9 +175,9 @@ action:
   # Motion during the night, and not a bedroom
   # -> Turn on the light 100% if before 22h
   - conditions:
-    - condition: state
-      entity_id: !input motion_sensor
-      state: 'on'
+    # - condition: state
+    #   entity_id: !input motion_sensor
+    #   state: 'on'
     - condition: trigger
       id:
         - trigger_by_motion
@@ -234,9 +210,9 @@ action:
   # Motion during the night, and not a bedroom
   # -> Turn on the light N% if after 22h
   - conditions:
-    - condition: state
-      entity_id: !input motion_sensor
-      state: 'on'
+    # - condition: state
+    #   entity_id: !input motion_sensor
+    #   state: 'on'
     - condition: trigger
       id:
         - trigger_by_motion
