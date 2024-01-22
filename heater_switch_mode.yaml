@@ -65,12 +65,14 @@ condition:
 
 action:
 - choose:
+
   #### When manual change, wait timer to collect selected T°
   - conditions:
-    - condition: state
-      entity_id: !input climate_valve
-      attribute: preset_mode
-      state: manual
+    - condition: not
+      conditions:
+        - condition: trigger
+          id:
+            - TriggeredByTimer
     sequence:
       - service: timer.start
         data:
@@ -83,6 +85,10 @@ action:
     - condition: trigger
       id:
         - TriggeredByTimer
+    - condition: state
+      entity_id: !input climate_valve
+      attribute: preset_mode
+      state: manual
     sequence:
     - service: input_boolean.turn_on
       data: {}
@@ -95,6 +101,9 @@ action:
 
   #### When auto mode selected, compute T°
   - conditions:
+    - condition: trigger
+      id:
+        - TriggeredByTimer
     - condition: state
       entity_id: !input climate_valve
       attribute: preset_mode
