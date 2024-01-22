@@ -50,8 +50,14 @@ blueprint:
           unit_of_measurement: "%"
           mode: slider
           step: 1
+    debounce_boolean:
+      name: Waiter for the bounce message
+      description: Boolean to indicate previous action was automated, wait for light message
+      selector:
+        entity:
+          domain: input_boolean
 
-mode: single
+mode: queued
 max_exceeded: silent
 
 variables:
@@ -59,6 +65,7 @@ variables:
   is_bedroom: !input is_bedroom
   day_brightness: !input day_brightness
   night_brightness: !input night_brightness
+  # debounce_boolean: !input debounce_boolean
 
 
 trigger:
@@ -76,6 +83,21 @@ trigger:
 
 action:
 - choose:
+
+  ########## Gobble message boucing following automation action
+  #
+  - conditions:
+    - condition: state
+      entity_id: !input debounce_boolean
+      state: 'on'
+    - condition: trigger
+      id:
+        - trigger_by_light
+    sequence:
+    - service: input_boolean.turn_off
+      data: {}
+      target:
+        entity_id: !input debounce_boolean
 
   ############## MANUAL BUTTON NOT TAKEN INTO ACCOUNT NOW
   # #
@@ -138,6 +160,10 @@ action:
     - service: light.turn_off
       target:
         entity_id: !input light_device
+    - service: input_boolean.turn_on
+      data: {}
+      target:
+        entity_id: !input debounce_boolean
 
   #
   # Motion during the day, and for no_window rooms
@@ -165,6 +191,10 @@ action:
         entity_id: !input light_device
       data:
         brightness_pct: "{{ day_brightness}}"
+    - service: input_boolean.turn_on
+      data: {}
+      target:
+        entity_id: !input debounce_boolean
     # - delay:
     #     hours: 0
     #     minutes: 0
@@ -200,6 +230,10 @@ action:
         entity_id: !input light_device
       data:
         brightness_pct: "{{ day_brightness}}"
+    - service: input_boolean.turn_on
+      data: {}
+      target:
+        entity_id: !input debounce_boolean
     # - delay:
     #     hours: 0
     #     minutes: 0
@@ -235,6 +269,10 @@ action:
         entity_id: !input light_device
       data:
         brightness_pct: "{{ night_brightness}}"
+    - service: input_boolean.turn_on
+      data: {}
+      target:
+        entity_id: !input debounce_boolean
     # - delay:
     #     hours: 0
     #     minutes: 0
