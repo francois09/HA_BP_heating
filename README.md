@@ -62,6 +62,7 @@ set by automations.
 * Used (RO) : Boolean indicating the room (mostly bedrooms) are subject to automations. If not, T° is always set to Eco
 * Planning (RO) : Planification for switching between Confort (on) and Eco (off) T°
 * Linked (RW) : List (Inside, Outside, Both, None) indicating how room is connected to the house or the outside
+* Selector timer (RW) : Timed selector helper. Wait until manual T° is selected
 
 #### Global helpers
 
