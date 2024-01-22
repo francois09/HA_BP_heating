@@ -109,10 +109,6 @@ action:
       attribute: preset_mode
       state: auto
     sequence:
-    - service: input_boolean.turn_on
-      data: {}
-      target:
-        entity_id: !input computing_boolean
     - service: climate.set_preset_mode
       data:
         preset_mode: manual
@@ -122,12 +118,3 @@ action:
       data: {}
       target:
         entity_id: !input manual_boolean
-    - delay:
-        hours: 0
-        minutes: 0
-        seconds: 10
-        milliseconds: 0
-    - service: input_boolean.turn_off
-      data: {}
-      target:
-        entity_id: !input computing_boolean
