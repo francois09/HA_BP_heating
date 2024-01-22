@@ -14,11 +14,6 @@ blueprint:
       selector:
         entity:
           domain: input_boolean
-    computing_boolean:
-      name: Currently computing setpoint
-      selector:
-        entity:
-          domain: input_boolean
     selected_temp:
       name: Selected °C setpoint
       selector:
@@ -48,19 +43,12 @@ trigger:
   id: TriggeredByTimer
 - platform: state
   entity_id: !input climate_valve
-  attribute: temperature
-- platform: state
-  entity_id: !input climate_valve
   attribute: preset_mode
-  to: auto
 
 condition:
   - condition: state
     entity_id: !input winter_mode_boolean
     state: 'on'
-  # - condition: state
-  #   entity_id: !input computing_boolean
-  #   state: 'off'
 
 
 action:
