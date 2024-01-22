@@ -43,7 +43,7 @@ variables:
 
 trigger:
 - platform: state
-  entity_id: !input trigging_timer
+  entity_id: !input selector_timer
   to: idle
   id: TriggeredByTimer
 - platform: state
