@@ -58,9 +58,9 @@ condition:
   - condition: state
     entity_id: !input winter_mode_boolean
     state: 'on'
-  - condition: state
-    entity_id: !input computing_boolean
-    state: 'off'
+  # - condition: state
+  #   entity_id: !input computing_boolean
+  #   state: 'off'
 
 
 action:
