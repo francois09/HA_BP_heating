@@ -29,11 +29,6 @@ blueprint:
       selector:
         entity:
           domain: input_boolean
-    computing_boolean:
-      name: Currently computing setpoint
-      selector:
-        entity:
-          domain: input_boolean
     setpoint:
       name: Selected °C setpoint
       selector:
@@ -46,6 +41,11 @@ blueprint:
           domain: input_boolean
     occupancy_boolean:
       name: Occupancy
+      selector:
+        entity:
+          domain: input_boolean
+    debounce_boolean:
+      name: Debounce valve update
       selector:
         entity:
           domain: input_boolean
@@ -86,27 +86,18 @@ action:
       entity_id: !input occupancy_boolean
       state: 'off'
     sequence:
-    - service: input_boolean.turn_on
-      data: {}
-      target:
-        entity_id: !input computing_boolean
     - service: input_number.set_value
       data_template:
         value: '{{ states(local_eco_temp) }}'
         entity_id: !input setpoint
+    - service: input_boolean.turn_on
+      data: {}
+      target:
+        entity_id: !input debounce_boolean
     - service: climate.set_temperature
       data_template:
         temperature: '{{ states(local_setpoint) }}'
         entity_id: !input climate_valve
-    - delay:
-        hours: 0
-        minutes: 0
-        seconds: 10
-        milliseconds: 0
-    - service: input_boolean.turn_off
-      data: {}
-      target:
-        entity_id: !input computing_boolean
 
   #
   # When manual, send local setpoint to the valve (used in case of restarting valve for example)
@@ -119,20 +110,11 @@ action:
     - service: input_boolean.turn_on
       data: {}
       target:
-        entity_id: !input computing_boolean
+        entity_id: !input debounce_boolean
     - service: climate.set_temperature
       data_template:
         temperature: '{{ states(local_setpoint) }}'
         entity_id: !input climate_valve
-    - delay:
-        hours: 0
-        minutes: 0
-        seconds: 10
-        milliseconds: 0
-    - service: input_boolean.turn_off
-      data: {}
-      target:
-        entity_id: !input computing_boolean
 
   #
   # When auto, and schedule is on, set comfort t°
@@ -148,27 +130,18 @@ action:
       entity_id: !input occupancy_boolean
       state: 'on'
     sequence:
-    - service: input_boolean.turn_on
-      data: {}
-      target:
-        entity_id: !input computing_boolean
     - service: input_number.set_value
       data_template:
         value: '{{ states(local_comfort_temp) }}'
         entity_id: !input setpoint
+    - service: input_boolean.turn_on
+      data: {}
+      target:
+        entity_id: !input debounce_boolean
     - service: climate.set_temperature
       data_template:
         temperature: '{{ states(local_setpoint) }}'
         entity_id: !input climate_valve
-    - delay:
-        hours: 0
-        minutes: 0
-        seconds: 10
-        milliseconds: 0
-    - service: input_boolean.turn_off
-      data: {}
-      target:
-        entity_id: !input computing_boolean
 
   #
   # When auto, and schedule is off, set eco t°
@@ -181,24 +154,15 @@ action:
       entity_id: !input schedule
       state: 'off'
     sequence:
-    - service: input_boolean.turn_on
-      data: {}
-      target:
-        entity_id: !input computing_boolean
     - service: input_number.set_value
       data_template:
         value: '{{ states(local_eco_temp) }}'
         entity_id: !input setpoint
+    - service: input_boolean.turn_on
+      data: {}
+      target:
+        entity_id: !input debounce_boolean
     - service: climate.set_temperature
       data_template:
         temperature: '{{ states(local_setpoint) }}'
         entity_id: !input climate_valve
-    - delay:
-        hours: 0
-        minutes: 0
-        seconds: 10
-        milliseconds: 0
-    - service: input_boolean.turn_off
-      data: {}
-      target:
-        entity_id: !input computing_boolean

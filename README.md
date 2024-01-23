@@ -58,7 +58,7 @@ set by automations.
 * Setpoint T° (RW) : Climate valve T° range values. Automation can decide the value based on Planning
 * Manual T° (RW) : Boolean indicating that Setpoint is manually determined. Set when climate valve is manually modified
 * Heat (RW) : Boolean indicating that the room need heating
-* Computing (RW) : Boolean avoiding race conditions on starting/setup climate valve
+* Debounce (RW) : Boolean avoiding race conditions on starting/setup climate valve
 * Used (RO) : Boolean indicating the room (mostly bedrooms) are subject to automations. If not, T° is always set to Eco
 * Planning (RO) : Planification for switching between Confort (on) and Eco (off) T°
 * Linked (RW) : List (Inside, Outside, Both, None) indicating how room is connected to the house or the outside

@@ -29,6 +29,11 @@ blueprint:
       selector:
         entity:
           domain: timer
+    debounce_boolean:
+      name: Debounce valve update
+      selector:
+        entity:
+          domain: input_boolean
 
 mode: queued
 max_exceeded: silent
@@ -57,7 +62,7 @@ condition:
 action:
 - choose:
 
-  #### When manual change, wait timer to collect selected T°
+  #### When any change, wait timer to collect selected T°
   - conditions:
     - condition: not
       conditions:
@@ -71,7 +76,21 @@ action:
         target:
           entity_id: !input selector_timer
 
-  #### When timer is Ok, it's time to collect selected T°
+  # When debounce is on, just turn off (automated events)
+  - conditions:
+    - condition: trigger
+      id:
+        - TriggeredByTimer
+    - condition: state
+      entity_id: !input debounce_boolean
+      state: 'on'
+    sequence:
+    - service: input_boolean.turn_off
+      data: {}
+      target:
+        entity_id: !input debounce_boolean
+
+  #### When timer is Ok, it's time to collect selected T° and turn flag to manual
   - conditions:
     - condition: trigger
       id:
@@ -90,7 +109,7 @@ action:
         value: "{% set temp = state_attr(local_climate_valve,'temperature')|float %}{{ temp }}"
         entity_id: !input selected_temp
 
-  #### When auto mode selected, compute T°
+  #### When auto mode selected, set debounce and re-send manual to valve
   - conditions:
     - condition: trigger
       id:
@@ -100,6 +119,10 @@ action:
       attribute: preset_mode
       state: auto
     sequence:
+    - service: input_boolean.turn_on
+      data: {}
+      target:
+        entity_id: !input debounce_boolean
     - service: climate.set_preset_mode
       data:
         preset_mode: manual
