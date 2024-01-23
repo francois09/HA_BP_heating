@@ -57,6 +57,7 @@ variables:
   local_comfort_temp: !input comfort_temp
   local_eco_temp: !input eco_temp
   local_setpoint: !input setpoint
+  local_climate_valve: !input climate_valve
 
 trigger:
 - platform: state
@@ -90,14 +91,18 @@ action:
       data_template:
         value: '{{ states(local_eco_temp) }}'
         entity_id: !input setpoint
-    - service: input_boolean.turn_on
-      data: {}
-      target:
-        entity_id: !input debounce_boolean
-    - service: climate.set_temperature
-      data_template:
-        temperature: '{{ states(local_setpoint) }}'
-        entity_id: !input climate_valve
+    - if:
+      - condition: template
+        value_template: '{{ state_attr(local_climate_valve, ''temperature'')|float != states(local_setpoint)|float }}'
+      then:
+      - service: input_boolean.turn_on
+        data: {}
+        target:
+          entity_id: !input debounce_boolean
+      - service: climate.set_temperature
+        data_template:
+          temperature: '{{ states(local_setpoint) }}'
+          entity_id: !input climate_valve
 
   #
   # When manual, send local setpoint to the valve (used in case of restarting valve for example)
@@ -107,14 +112,18 @@ action:
       entity_id: !input manual_boolean
       state: 'on'
     sequence:
-    - service: input_boolean.turn_on
-      data: {}
-      target:
-        entity_id: !input debounce_boolean
-    - service: climate.set_temperature
-      data_template:
-        temperature: '{{ states(local_setpoint) }}'
-        entity_id: !input climate_valve
+    - if:
+      - condition: template
+        value_template: '{{ state_attr(local_climate_valve, ''temperature'')|float != states(local_setpoint)|float }}'
+      then:
+      - service: input_boolean.turn_on
+        data: {}
+        target:
+          entity_id: !input debounce_boolean
+      - service: climate.set_temperature
+        data_template:
+          temperature: '{{ states(local_setpoint) }}'
+          entity_id: !input climate_valve
 
   #
   # When auto, and schedule is on, set comfort t°
@@ -134,14 +143,18 @@ action:
       data_template:
         value: '{{ states(local_comfort_temp) }}'
         entity_id: !input setpoint
-    - service: input_boolean.turn_on
-      data: {}
-      target:
-        entity_id: !input debounce_boolean
-    - service: climate.set_temperature
-      data_template:
-        temperature: '{{ states(local_setpoint) }}'
-        entity_id: !input climate_valve
+    - if:
+      - condition: template
+        value_template: '{{ state_attr(local_climate_valve, ''temperature'')|float != states(local_setpoint)|float }}'
+      then:
+      - service: input_boolean.turn_on
+        data: {}
+        target:
+          entity_id: !input debounce_boolean
+      - service: climate.set_temperature
+        data_template:
+          temperature: '{{ states(local_setpoint) }}'
+          entity_id: !input climate_valve
 
   #
   # When auto, and schedule is off, set eco t°
@@ -158,11 +171,15 @@ action:
       data_template:
         value: '{{ states(local_eco_temp) }}'
         entity_id: !input setpoint
-    - service: input_boolean.turn_on
-      data: {}
-      target:
-        entity_id: !input debounce_boolean
-    - service: climate.set_temperature
-      data_template:
-        temperature: '{{ states(local_setpoint) }}'
-        entity_id: !input climate_valve
+    - if:
+      - condition: template
+        value_template: '{{ state_attr(local_climate_valve, ''temperature'')|float != states(local_setpoint)|float }}'
+      then:
+      - service: input_boolean.turn_on
+        data: {}
+        target:
+          entity_id: !input debounce_boolean
+      - service: climate.set_temperature
+        data_template:
+          temperature: '{{ states(local_setpoint) }}'
+          entity_id: !input climate_valve
