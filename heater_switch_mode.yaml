@@ -44,6 +44,9 @@ trigger:
 - platform: state
   entity_id: !input climate_valve
   attribute: preset_mode
+- platform: state
+  entity_id: !input climate_valve
+  attribute: temperature
 
 condition:
   - condition: state
