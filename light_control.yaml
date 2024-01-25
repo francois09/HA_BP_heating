@@ -150,9 +150,9 @@ action:
   # -> Turn off the light
   # (in case of multiple sensors, we need to check if ALL motion sensors are OFF )
   - conditions:
-    # - condition: state
-    #   entity_id: !input motion_sensor
-    #   state: 'off'
+    - condition: state
+      entity_id: !input motion_sensor
+      state: 'off'
     - condition: trigger
       id:
         - trigger_by_nomotion
@@ -195,11 +195,6 @@ action:
       data: {}
       target:
         entity_id: !input debounce_boolean
-    # - delay:
-    #     hours: 0
-    #     minutes: 0
-    #     seconds: 2
-    #     milliseconds: 0
 
   #
   # Motion during the night, and not a bedroom
@@ -234,11 +229,6 @@ action:
       data: {}
       target:
         entity_id: !input debounce_boolean
-    # - delay:
-    #     hours: 0
-    #     minutes: 0
-    #     seconds: 2
-    #     milliseconds: 0
 
   #
   # Motion during the night, and not a bedroom
@@ -273,8 +263,3 @@ action:
       data: {}
       target:
         entity_id: !input debounce_boolean
-    # - delay:
-    #     hours: 0
-    #     minutes: 0
-    #     seconds: 2
-    #     milliseconds: 0
