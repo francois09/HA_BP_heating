@@ -1,0 +1,74 @@
+blueprint:
+  name: Heater boot management
+  description: Wait after the boot because of lot of MQTT messages are coming from climate valves
+  domain: automation
+  source_url: https://github.com/francois09/HA_blueprints/heater_boot_management.yaml
+  input:
+    trigging_timer:
+      name: Timer to trigger event
+      selector:
+        entity:
+          domain: timer
+    switch_automation:
+      name: Switching manual/auto/setpoint automation
+      selector:
+        entity:
+          domain: automation
+          multiple: true
+
+mode: single
+max_exceeded: silent
+
+variables:
+  local_freeze_temp: !input freeze_temp_number
+  local_climate_valve: !input climate_valve
+
+trigger:
+- platform: homeassistant
+  event: start
+  id: TriggeredByBoot
+
+- platform: state
+  entity_id: !input trigging_timer
+  id: TriggeredByTimer
+
+action:
+- choose:
+  ### Started by the boot
+  - conditions:
+    - condition: trigger
+      id: TriggeredByBoot
+    sequence:
+      - service: timer.start
+        data: {}
+        target:
+          entity_id: !input trigging_timer
+
+  ### Started by timer active
+  - conditions:
+    - condition: trigger
+      id:
+        - TriggeredByTimer
+    - condition: state
+      entity_id: !input trigging_timer
+      to: active
+    sequence:
+    - service: automation.turn_off
+      data:
+        stop_actions: true
+      target:
+        entity_id: !input switch_automation
+      
+  ### Started by timer idle
+  - conditions:
+    - condition: trigger
+      id:
+        - TriggeredByTimer
+    - condition: state
+      entity_id: !input trigging_timer
+      to: idle
+    sequence:
+    - service: automation.turn_on
+      data: {}
+      target:
+        entity_id: !input switch_automation
