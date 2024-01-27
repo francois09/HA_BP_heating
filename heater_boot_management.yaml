@@ -19,10 +19,6 @@ blueprint:
 mode: single
 max_exceeded: silent
 
-variables:
-  local_freeze_temp: !input freeze_temp_number
-  local_climate_valve: !input climate_valve
-
 trigger:
 - platform: homeassistant
   event: start
