@@ -16,7 +16,7 @@ blueprint:
           domain: automation
           multiple: true
 
-mode: single
+mode: queued
 max_exceeded: silent
 
 trigger:
