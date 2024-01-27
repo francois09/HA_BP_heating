@@ -72,80 +72,10 @@ set by automations.
 * Always Closed (RO) : Binary sensor that can be used in room link decision
 * Heating automation pause (RW) : Timer used to avoid boot side effects.
 
-2. Then, you have to create some global automations not covered by these blueprints:
-
-The following script will detect HA boot, and start a timer (duration will depend on your boot speed, I use 5 minutes).
-This will temporary disable some automations, and reactivate it once timer finish.
-
-```
-- id: 'xxxx'
-  alias: 'Chauffage: Boot détecté'
-  description: ''
-  trigger:
-  - platform: homeassistant
-    event: start
-  condition: []
-  action:
-  - service: timer.start
-    data: {}
-    target:
-      entity_id: timer.heating_automation_pause
-  mode: single
-```
-
-The following script is responsible to deactivate/activate automations during boot sequence. Because automations are hard-coded,
-it should be turned into a blueprint ! Feel free to contribute ;)
-
-```
-- id: 'xxxxx'
-  alias: 'Chauffage: Attendre la fin du boot'
-  description: ''
-  trigger:
-  - platform: state
-    entity_id:
-    - timer.heating_automation_pause
-    to: active
-  - platform: state
-    entity_id:
-    - timer.heating_automation_pause
-    to: idle
-  condition: []
-  action:
-  - choose:
-    - conditions:
-      - condition: state
-        entity_id: timer.heating_automation_pause
-        state: active
-      sequence:
-      - service: automation.turn_off
-        data:
-          stop_actions: true
-        target:
-          entity_id:
-          - automation.chauffage_switch_chambre_nord
-          - automation.chauffage_switch_chambre_principale
-          - automation.chauffage_switch_chambre_sud
-          - automation.chauffage_switch_salle_a_manger
-    - conditions:
-      - condition: state
-        entity_id: timer.heating_automation_pause
-        state: idle
-      sequence:
-      - service: automation.turn_on
-        data: {}
-        target:
-          entity_id:
-          - automation.chauffage_switch_chambre_nord
-          - automation.chauffage_switch_chambre_principale
-          - automation.chauffage_switch_chambre_sud
-          - automation.chauffage_switch_salle_a_manger
-  mode: single
-```
-
-3. You need to instantiate `heater_switch_mode.yaml`, `heater_setpoint_compute.yaml`, `heater_room_link.yaml` and `heater_request_compute.yaml` for each
+2. You need to instantiate `heater_switch_mode.yaml`, `heater_setpoint_compute.yaml`, `heater_room_link.yaml` and `heater_request_compute.yaml` for each
 room you want to activate automation.
 
-4. Then `heater_one_need.yaml` and `heater_start_stop.yaml` should also be created to globally manage heating system.
+3. Then `heater_one_need.yaml`, `heater_start_stop.yaml` and `heater_boot_management.yaml` should also be created to globally manage heating system.
 
 ### Light system
 
