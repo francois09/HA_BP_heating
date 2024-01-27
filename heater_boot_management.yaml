@@ -47,7 +47,7 @@ action:
         - TriggeredByTimer
     - condition: state
       entity_id: !input trigging_timer
-      to: active
+      state: active
     sequence:
     - service: automation.turn_off
       data:
@@ -62,7 +62,7 @@ action:
         - TriggeredByTimer
     - condition: state
       entity_id: !input trigging_timer
-      to: idle
+      state: idle
     sequence:
     - service: automation.turn_on
       data: {}
