@@ -50,6 +50,17 @@ blueprint:
           unit_of_measurement: "%"
           mode: slider
           step: 1
+    off_delay:
+      name: Delay before really turning off
+      description:
+      default: 0
+      selector:
+        number:
+          min: 0
+          max: 120
+          unit_of_measurement: "seconds"
+          mode: slider
+          step: 10
     debounce_boolean:
       name: Waiter for the bounce message
       description: Boolean to indicate previous action was automated, wait for light message
@@ -57,7 +68,7 @@ blueprint:
         entity:
           domain: input_boolean
 
-mode: queued
+mode: restart
 max_exceeded: silent
 
 variables:
@@ -157,6 +168,7 @@ action:
       id:
         - trigger_by_nomotion
     sequence:
+    - delay: !input off_timer
     - service: light.turn_off
       target:
         entity_id: !input light_device
