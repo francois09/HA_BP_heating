@@ -90,6 +90,12 @@ TBD
 This blueprint is the global on/off heating system. It collects every heater requests from rooms, and decide if home heater should be started or not. It also check
 for rooms links to determine if heating system should be shutdown.
 
+### Heater boot management
+
+[![Open your Home Assistant instance and show the blueprint import dialog with a specific blueprint pre-filled.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fraw.githubusercontent.com%2Ffrancois09%2FHA_blueprints%2Fmain%2Fheater_boot_management.yaml)
+
+This blueprint is used at HA boot, to avoid receiving climate valve messages for a certain time. Sometimes, setpoint is received just after the boot, turning climate to be interpreted as a manual selection.
+
 ### Heater request compute
 
 [![Open your Home Assistant instance and show the blueprint import dialog with a specific blueprint pre-filled.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fraw.githubusercontent.com%2Ffrancois09%2FHA_blueprints%2Fmain%2Fheater_request_compute.yaml)
