@@ -78,7 +78,8 @@ action:
       target:
         entity_id: !input request_heater
     - service: number.set_value
-      data: -2.5
+      data:
+        value: -2.5
       target:
         entity_id: !input climate_valve_calibration 
     # - service: mqtt.publish
@@ -94,7 +95,8 @@ action:
       target:
         entity_id: !input request_heater
     - service: number.set_value
-      data: 0
+      data:
+        value: 0
       target:
         entity_id: !input climate_valve_calibration 
     # - service: mqtt.publish
