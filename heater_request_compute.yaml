@@ -34,6 +34,11 @@ blueprint:
       selector:
         entity:
           domain: input_select
+    regulated_boolean:
+      name: Regulated by automation
+      selector:
+        entity:
+          domain: input_boolean
     winter_mode_boolean:
       name: Winter switch
       selector:
@@ -58,6 +63,9 @@ trigger:
 condition:
   - condition: state
     entity_id: !input winter_mode_boolean
+    state: 'on'
+  - condition: state
+    entity_id: !input regulated_boolean
     state: 'on'
   - or:
       - condition: state

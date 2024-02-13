@@ -63,6 +63,7 @@ set by automations.
 * Planning (RO) : Planification for switching between Confort (on) and Eco (off) T°
 * Linked (RW) : List (Inside, Outside, Both, None) indicating how room is connected to the house or the outside
 * Selector timer (RW) : Timed selector helper. Wait until manual T° is selected
+* Regulated (RO) : Boolean indicating the room are able to request heating. If off, no heat can be request, only valve changes allowed.
 
 #### Global helpers
 
