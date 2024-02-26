@@ -34,8 +34,8 @@ blueprint:
       selector:
         entity:
           domain: input_select
-    regulated_boolean:
-      name: Regulated by automation
+    active_boolean:
+      name: Active for automation
       selector:
         entity:
           domain: input_boolean
@@ -65,7 +65,7 @@ condition:
     entity_id: !input winter_mode_boolean
     state: 'on'
   - condition: state
-    entity_id: !input regulated_boolean
+    entity_id: !input active_boolean
     state: 'on'
   - or:
       - condition: state
