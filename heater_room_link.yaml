@@ -6,54 +6,63 @@ blueprint:
   input:
     climate_valve:
       name: Climate valve
+      description: Room TRV (viewed as Climate)
       selector:
         entity:
           domain: climate
     valve_child_lock:
       name: Valve child lock
+      description: Room TRV child lock
       selector:
         entity:
           domain: lock
     inside_aperture_sensor:
       name: Inside aperture
+      description: Room sensor for door opening. Open means room is connected to the house.
       selector:
         entity:
           domain: binary_sensor
           multiple: true
     outside_aperture_sensor:
       name: Outside aperture
+      description: Room sensor for window opening. Open means room is connected to outside.
       selector:
         entity:
           domain: binary_sensor
           multiple: true
     trigging_timer:
       name: Timer to trigger event
+      description: Global timer used for managing room link status.
       selector:
         entity:
           domain: timer
     room_link_select:
       name: Room link status
+      description: The way the room is connected to environment. Inside, Outside, Both or None.
       selector:
         entity:
           domain: input_select
     winter_mode_boolean:
       name: Winter switch
+      description: Global switch to say it's winter or not.
       selector:
         entity:
           domain: input_boolean
     setpoint_automation:
       name: Setpoint compute automation
+      description: The automation in charge to compute setpoint for the room. Called "Room heating setpoint compute"
       selector:
         entity:
           domain: automation
     request_heater:
       name: Request heater switch
+      description: Room specific boolean to request heating
       selector:
         entity:
           domain: input_boolean
     freeze_temp_number:
       name: Freeze temperature value
-      description: Minimal off freeze T°
+      description: Minimal freeze protection T°
       default: 5
       selector:
         number:
@@ -61,6 +70,7 @@ blueprint:
           max: 10
     debounce_boolean:
       name: Debounce valve update
+      description: Specific debounce valve boolean
       selector:
         entity:
           domain: input_boolean

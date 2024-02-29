@@ -6,46 +6,55 @@ blueprint:
   input:
     climate_valve:
       name: Climate valve
+      description: Room TRV (viewed as Climate)
       selector:
         entity:
           domain: climate
     comfort_temp:
       name: Comfort T° of the room
+      description: The comfort T° selected for the room
       selector:
         entity:
           domain: input_number
     eco_temp:
       name: Eco T° of the room
+      description: The eco T° selected for the room
       selector:
         entity:
           domain: input_number
     schedule:
       name: Planning of the room
+      description: The schedule T° of the room
       selector:
         entity:
           domain: schedule
     manual_boolean:
       name: Manual mode switch
+      description: Switch indicating if the room is in manual or automated mode
       selector:
         entity:
           domain: input_boolean
     setpoint:
       name: Selected °C setpoint
+      description: Setpoint value of the room
       selector:
         entity:
           domain: input_number
     winter_mode_boolean:
       name: Winter switch
+      description: Global switch to say it's winter or not.
       selector:
         entity:
           domain: input_boolean
     occupancy_boolean:
       name: Occupancy
+      description: Room indicator for occupancy
       selector:
         entity:
           domain: input_boolean
     debounce_boolean:
       name: Debounce valve update
+      description: Room debounce boolean flag
       selector:
         entity:
           domain: input_boolean

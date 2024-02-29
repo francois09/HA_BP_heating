@@ -6,41 +6,49 @@ blueprint:
   input:
     climate_valve:
       name: Climate valve
+      description: Room TRV (viewed as Climate)
       selector:
         entity:
           domain: climate
     climate_valve_calibration:
       name: Climate valve calibration
+      description: Room TRV calibration value
       selector:
         entity:
           domain: number
     selected_temp:
       name: Selected T° setpoint storage
+      description: Room setpoint stored in Home-Assistant
       selector:
         entity:
           domain: input_number
     current_temp:
       name: Current T°
+      description: Room T° sensor
       selector:
         entity:
           domain: sensor
     request_heater:
       name: Request heater switch
+      description: Room specific boolean to request heating
       selector:
         entity:
           domain: input_boolean
     room_link_select:
       name: Room link status
+      description: The way the room is connected to environment. Inside, Outside, Both or None.
       selector:
         entity:
           domain: input_select
     active_boolean:
       name: Active for automation
+      description: Room activation status
       selector:
         entity:
           domain: input_boolean
     winter_mode_boolean:
       name: Winter switch
+      description: Global switch to say it's winter or not.
       selector:
         entity:
           domain: input_boolean

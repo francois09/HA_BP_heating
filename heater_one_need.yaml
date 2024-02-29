@@ -6,23 +6,27 @@ blueprint:
   input:
     request_heater:
       name: Request heater switch
+      description: Room specific boolean to request heating
       selector:
         entity:
           domain: input_boolean
           multiple: true
     heater_switch:
       name: Heater switch
+      description: Global switch that start heating system. Mostly physical switch.
       selector:
         entity:
           domain: switch
     room_link_select:
       name: Room link status
+      description: The way the room is connected to environment. Inside, Outside, Both or None.
       selector:
         entity:
           domain: input_select
           multiple: true
     winter_mode_boolean:
       name: Winter switch
+      description: Global switch to say it's winter or not.
       selector:
         entity:
           domain: input_boolean

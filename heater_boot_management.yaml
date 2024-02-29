@@ -1,16 +1,18 @@
 blueprint:
   name: Heater boot management
-  description: Wait after the boot because of lot of MQTT messages are coming from climate valves
+  description: Wait after the boot because of lot of MQTT messages are coming from climate valves after a HA reboot
   domain: automation
   source_url: https://github.com/francois09/HA_blueprints/heater_boot_management.yaml
   input:
     trigging_timer:
       name: Timer to trigger event
+      description: Global timer used to wait all TRV MQTT message are sent
       selector:
         entity:
           domain: timer
     switch_automation:
       name: Switching manual/auto/setpoint automation
+      description: The automation in charge of switching mode. By default it's called "Room heating mode switching"
       selector:
         entity:
           domain: automation
