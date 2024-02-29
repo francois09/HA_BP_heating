@@ -6,31 +6,37 @@ blueprint:
   input:
     climate_valve:
       name: Climate valve
+      description: Rooms TRV (viewed as Climate)
       selector:
         entity:
           domain: climate
     manual_boolean:
       name: Manual mode switch
+      description: Switch indicating if the room is in manual or automated mode
       selector:
         entity:
           domain: input_boolean
     selected_temp:
       name: Selected °C setpoint
+      description: Room setpoint stored in Home-Assistant
       selector:
         entity:
           domain: input_number
     winter_mode_boolean:
       name: Winter switch
+      description: Global switch to say it's winter or not.
       selector:
         entity:
           domain: input_boolean
     selector_timer:
       name: Timer to trigger read the temp event
+      description: Room timer to avoid multiple T° messages from TRV.
       selector:
         entity:
           domain: timer
     debounce_boolean:
       name: Debounce valve update
+      description: Room debounce boolean flag
       selector:
         entity:
           domain: input_boolean

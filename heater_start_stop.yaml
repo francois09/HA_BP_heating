@@ -6,29 +6,34 @@ blueprint:
   input:
     climate_valve:
       name: Climate valve
+      description: List of room TRV (viewed as Climate)
       selector:
         entity:
           domain: climate
           multiple: true
     valve_child_lock:
       name: Valve child lock
+      description: List of room TRV child lock
       selector:
         entity:
           domain: lock
           multiple: true
     winter_mode_boolean:
       name: Winter switch
+      description: Global switch to say it's winter or not.
       selector:
         entity:
           domain: input_boolean
     setpoint_automation:
       name: Setpoint compute automation
+      description: List of automations managing setpoints. Called as "Room heating setpoint compute"
       selector:
         entity:
           domain: automation
           multiple: true
     request_automation:
       name: Request evaluate automation
+      description: List of automations managing heating requests. Called as "Room heating request compute"
       selector:
         entity:
           domain: automation
