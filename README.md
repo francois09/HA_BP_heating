@@ -1,26 +1,15 @@
 # homeassistant
 
-This repository contains blueprints for heating and light. As you can imagine, `heater_*` are for heating management,
-and `light_*` are for ... light management.
+This repository contains blueprints for heating system management
 
 ## Principle
-
-### Heating system
 
 1. Each room is autonomous, and have helpers for their properties
 2. Each room should have a climate valve, and a T° sensor
 3. A global blueprint is in charge of collecting rooms needs to decide to start heater/climate
 4. A global boolean (winter_mode) is in charge to determine if it's ... winter :)
 
-### Light system
-
-1. Each room is independant, and must have a Dimmer and a motion sensor
-2. Light will depend on cloud cover, window, and sun
-3. Manual override is possible
-
 ## How it works
-
-### Heating system
 
 Based on triggers, each room will compute the T° setpoint, and if necessary activate a helper
 saying it needs heating.
@@ -40,13 +29,7 @@ Another automation will decide to start or stop the heating system if rooms need
 
 On non-winter mode, all climate valves will be set to "off" and also "child lock" mode, to preserve battery.
 
-### Light system
-
-TBD
-
 ## How to setup
-
-### Heating system
 
 1. First, you need to create global and room helpers. `RO` indicates automation don't touch value, `RW` indicates value can be
 set by automations.
@@ -77,10 +60,6 @@ set by automations.
 room you want to activate automation.
 
 3. Then `heater_one_need.yaml`, `heater_start_stop.yaml` and `heater_boot_management.yaml` should also be created to globally manage heating system.
-
-### Light system
-
-TBD
 
 ## Blueprints
 
