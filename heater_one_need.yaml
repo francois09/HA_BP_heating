@@ -6,7 +6,7 @@ blueprint:
   input:
     request_heater:
       name: Request heater switch
-      description: Room specific boolean to request heating
+      description: Room helper for triggering heating system (boiler)
       selector:
         entity:
           domain: input_boolean

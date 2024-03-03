@@ -18,7 +18,7 @@ blueprint:
           domain: input_boolean
     selected_temp:
       name: Selected °C setpoint
-      description: Room setpoint stored in Home-Assistant
+      description: Helper to store room setpoint calculated by Heating Management
       selector:
         entity:
           domain: input_number
