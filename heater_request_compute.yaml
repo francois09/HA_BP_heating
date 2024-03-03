@@ -12,13 +12,13 @@ blueprint:
           domain: climate
     climate_valve_calibration:
       name: Climate valve calibration
-      description: Room TRV calibration value
+      description: Room TRV calibration/offset value
       selector:
         entity:
           domain: number
     selected_temp:
       name: Selected T° setpoint storage
-      description: Room setpoint stored in Home-Assistant
+      description: Helper to store room setpoint calculated by Heating Management
       selector:
         entity:
           domain: input_number
@@ -30,7 +30,7 @@ blueprint:
           domain: sensor
     request_heater:
       name: Request heater switch
-      description: Room specific boolean to request heating
+      description: Room helper for triggering heating system (boiler)
       selector:
         entity:
           domain: input_boolean

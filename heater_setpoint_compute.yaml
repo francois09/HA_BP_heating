@@ -48,7 +48,7 @@ blueprint:
           domain: input_boolean
     occupancy_boolean:
       name: Occupancy
-      description: Room indicator for occupancy
+      description: Room helper for occupancy. If on, room will follow schedule. If off, always Eco T°.
       selector:
         entity:
           domain: input_boolean
