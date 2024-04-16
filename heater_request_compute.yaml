@@ -67,6 +67,8 @@ trigger:
   entity_id: !input current_temp
 - platform: state
   entity_id: !input selected_temp
+- platform: state
+  entity_id: !input room_link_select
 
 condition:
   - condition: state
