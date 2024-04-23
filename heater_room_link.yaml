@@ -10,12 +10,12 @@ blueprint:
       selector:
         entity:
           domain: climate
-    valve_child_lock:
-      name: Valve child lock
-      description: Room TRV child lock
+    valve_openwindow_switch:
+      name: Valve openwindow switch
+      description: Room TRV openwindow switch
       selector:
         entity:
-          domain: lock
+          domain: switch
     inside_aperture_sensor:
       name: Inside aperture
       description: Room sensor for door opening. Open means room is connected to the house.
@@ -130,10 +130,10 @@ action:
         entity_id: !input room_link_select
         state: Outside
       then:
-      - service: lock.unlock
+      - service: switch.turn_off
         data: {}
         target:
-          entity_id: !input valve_child_lock
+          entity_id: !input valve_openwindow_switch
       - service: climate.turn_on
         data: {}
         target:
@@ -180,10 +180,10 @@ action:
       data: {}
       target:
         entity_id: !input climate_valve
-    - service: lock.lock
+    - service: switch.turn_on
       data: {}
       target:
-        entity_id: !input valve_child_lock
+        entity_id: !input valve_openwindow_switch
     - service: input_boolean.turn_off
       data: {}
       target:
@@ -212,10 +212,10 @@ action:
         entity_id: !input room_link_select
         state: Outside
       then:
-      - service: lock.unlock
+      - service: switch.turn_off
         data: {}
         target:
-          entity_id: !input valve_child_lock
+          entity_id: !input valve_openwindow_switch
       - service: climate.turn_on
         data: {}
         target:
@@ -247,10 +247,10 @@ action:
         entity_id: !input room_link_select
         state: Outside
       then:
-      - service: lock.unlock
+      - service: switch.turn_off
         data: {}
         target:
-          entity_id: !input valve_child_lock
+          entity_id: !input valve_openwindow_switch
       - service: climate.turn_on
         data: {}
         target:

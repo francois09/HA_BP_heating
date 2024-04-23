@@ -4,12 +4,6 @@ blueprint:
   domain: automation
   source_url: https://github.com/francois09/HA_blueprints/heater_request_compute.yaml
   input:
-    climate_valve:
-      name: Climate valve
-      description: Room TRV (viewed as Climate)
-      selector:
-        entity:
-          domain: climate
     climate_valve_calibration:
       name: Climate valve calibration
       description: Room TRV calibration/offset value
@@ -57,8 +51,6 @@ mode: single
 max_exceeded: silent
 
 variables:
-  local_climate_valve: !input climate_valve
-#   local_climate_valve_calibration: !input climate_valve_calibration
   local_current_temp: !input current_temp
   local_selected_temp: !input selected_temp
 
@@ -100,10 +92,6 @@ action:
         value: -2.5
       target:
         entity_id: !input climate_valve_calibration 
-    # - service: mqtt.publish
-    #   data:
-    #     topic: "zigbee2mqtt/{{state_attr(local_climate_valve,'friendly_name')}}/set/local_temperature_calibration"
-    #     payload: "-2.5"
   - conditions:
     - condition: template
       value_template: '{{ states(local_current_temp)|float >= states(local_selected_temp) |float }}'
@@ -117,7 +105,3 @@ action:
         value: 0
       target:
         entity_id: !input climate_valve_calibration 
-    # - service: mqtt.publish
-    #   data:
-    #     topic: "zigbee2mqtt/{{state_attr(local_climate_valve,'friendly_name')}}/set/local_temperature_calibration"
-    #     payload: "0"
