@@ -60,14 +60,6 @@ blueprint:
       selector:
         entity:
           domain: input_boolean
-    freeze_temp_number:
-      name: Freeze temperature value
-      description: Minimal freeze protection T°
-      default: 5
-      selector:
-        number:
-          min: 1
-          max: 10
     debounce_boolean:
       name: Debounce valve update
       description: Specific debounce valve boolean
@@ -79,7 +71,6 @@ mode: restart
 max_exceeded: silent
 
 variables:
-  local_freeze_temp: !input freeze_temp_number
   local_climate_valve: !input climate_valve
 
 trigger:
@@ -164,18 +155,6 @@ action:
       entity_id: !input outside_aperture_sensor
       state: 'on'
     sequence:
-    - if:
-      - condition: template
-        value_template: '{{ state_attr(local_climate_valve, ''temperature'')|float != local_freeze_temp|float }}'
-      then:
-      - service: input_boolean.turn_on
-        data: {}
-        target:
-          entity_id: !input debounce_boolean
-      - service: climate.set_temperature
-        data_template:
-          temperature: '{{ local_freeze_temp }}'
-          entity_id: !input climate_valve
     - service: climate.turn_off
       data: {}
       target:
