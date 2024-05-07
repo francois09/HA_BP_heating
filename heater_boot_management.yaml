@@ -17,6 +17,17 @@ blueprint:
         entity:
           domain: automation
           multiple: true
+    off_delay:
+      name: Delay before turning on automations
+      description: Wait some time after boot before turning on back automations
+      default: 5
+      selector:
+        number:
+          min: 0
+          max: 20
+          unit_of_measurement: "minuts"
+          mode: slider
+          step: 1
 
 mode: queued
 max_exceeded: silent
@@ -38,24 +49,30 @@ action:
       id: TriggeredByBoot
     sequence:
       - service: timer.start
-        data: {}
+        data:
+          duration: !input off_delay
         target:
           entity_id: !input trigging_timer
-
-  ### Started by timer active
-  - conditions:
-    - condition: trigger
-      id:
-        - TriggeredByTimer
-    - condition: state
-      entity_id: !input trigging_timer
-      state: active
-    sequence:
     - service: automation.turn_off
       data:
         stop_actions: true
       target:
         entity_id: !input switch_automation
+
+  # ### Started by timer active
+  # - conditions:
+  #   - condition: trigger
+  #     id:
+  #       - TriggeredByTimer
+  #   - condition: state
+  #     entity_id: !input trigging_timer
+  #     state: active
+  #   sequence:
+  #   - service: automation.turn_off
+  #     data:
+  #       stop_actions: true
+  #     target:
+  #       entity_id: !input switch_automation
       
   ### Started by timer idle
   - conditions:
