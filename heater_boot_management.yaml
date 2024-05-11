@@ -1,4 +1,4 @@
-blueprint:
+œblueprint:
   name: Heater boot management
   description: Wait after the boot because of lot of MQTT messages are coming from climate valves after a HA reboot
   domain: automation
@@ -20,14 +20,14 @@ blueprint:
     off_delay:
       name: Delay before turning on automations
       description: Wait some time after boot before turning on back automations
-      default: 5
+      default: 300
       selector:
         number:
           min: 0
-          max: 20
-          unit_of_measurement: "minuts"
+          max: 3600
+          unit_of_measurement: "seconds"
           mode: slider
-          step: 1
+          step: 60
 
 mode: queued
 max_exceeded: silent
