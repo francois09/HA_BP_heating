@@ -38,8 +38,14 @@ blueprint:
         entity:
           domain: automation
           multiple: true
+    heater_power:
+      name: Heater power
+      description: Electric power of Heater
+      selector:
+        entity:
+          domain: switch
 
-mode: single
+mode: queued
 max_exceeded: silent
 
 trigger:
@@ -53,6 +59,15 @@ action:
       entity_id: !input winter_mode_boolean
       state: 'on'
     sequence:
+    - service: switch.turn_on
+      data: {}
+      target:
+        entity_id: !input heater_power
+    - delay:
+        hours: 0
+        minutes: 5
+        seconds: 0
+        milliseconds: 0
     - service: lock.unlock
       data: {}
       target:
@@ -93,3 +108,12 @@ action:
       data: {}
       target:
         entity_id: !input valve_child_lock
+    - delay:
+        hours: 0
+        minutes: 3
+        seconds: 0
+        milliseconds: 0
+    - service: switch.turn_off
+      data: {}
+      target:
+        entity_id: !input heater_power
