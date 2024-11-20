@@ -22,6 +22,17 @@ blueprint:
       selector:
         entity:
           domain: sensor
+    hysteresis:
+      name: Hysteresis absolute value
+      description: Value above and under T° to decide if request should be set or no
+      default: 0
+      selector:
+        number:
+          min: 0
+          max: 1
+          unit_of_measurement: "°C"
+          mode: slider
+          step: 0.1
     request_heater:
       name: Request heater switch
       description: Room helper for triggering heating system (boiler)
@@ -53,6 +64,7 @@ max_exceeded: silent
 variables:
   local_current_temp: !input current_temp
   local_selected_temp: !input selected_temp
+  local_hysteresis: !input hysteresis
 
 trigger:
 - platform: state
@@ -81,7 +93,7 @@ action:
 - choose:
   - conditions:
     - condition: template
-      value_template: '{{ states(local_current_temp)|float < states(local_selected_temp) |float }}'
+      value_template: '{{ states(local_current_temp)|float < states(local_selected_temp)|float - local_hysteresis }}'
     sequence:
     - service: input_boolean.turn_on
       data: {}
@@ -94,7 +106,7 @@ action:
         entity_id: !input climate_valve_calibration 
   - conditions:
     - condition: template
-      value_template: '{{ states(local_current_temp)|float >= states(local_selected_temp) |float }}'
+      value_template: '{{ states(local_current_temp)|float >= states(local_selected_temp)|float + local_hysteresis }}'
     sequence:
     - service: input_boolean.turn_off
       data: {}
