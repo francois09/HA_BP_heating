@@ -10,6 +10,17 @@ blueprint:
       selector:
         entity:
           domain: number
+    climate_valve_calibration_value:
+      name: Climate valve calibration value
+      description: Valve calibration value applied
+      default: -2.5
+      selector:
+        number:
+          min: -4
+          max: 4
+          unit_of_measurement: "°C"
+          mode: slider
+          step: 0.5
     selected_temp:
       name: Selected T° setpoint storage
       description: Helper to store room setpoint calculated by Heating Management
@@ -101,7 +112,7 @@ action:
         entity_id: !input request_heater
     - service: number.set_value
       data:
-        value: -2.5
+        value: !input climate_valve_calibration_value
       target:
         entity_id: !input climate_valve_calibration 
   - conditions:
