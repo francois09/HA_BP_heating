@@ -31,6 +31,13 @@ blueprint:
         entity:
           domain: automation
           multiple: true
+    roomlink_automation:
+      name: Rooms link automation
+      description: List of automations managing room connections. Called as "Room link status"
+      selector:
+        entity:
+          domain: automation
+          multiple: true
     request_automation:
       name: Request evaluate automation
       description: List of automations managing heating requests. Called as "Room heating request compute"
@@ -76,6 +83,15 @@ action:
       data: {}
       target:
         entity_id: !input climate_valve
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 10
+        milliseconds: 0
+    - service: automation.trigger
+      data: {}
+      target:
+        entity_id: !input roomlink_automation
     - delay:
         hours: 0
         minutes: 0
