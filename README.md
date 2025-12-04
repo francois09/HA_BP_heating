@@ -76,7 +76,7 @@ You then can decide if the room is "Used" or not. For example, my own bedroom is
 
 When you change setpoint on the TRV, the room is marked as "Manual", and the Setpoint T° will remain as selected. You can change it to "Not manual" into Home-Assistant, or (like me), press the knob on the TRV to select "Automatic". This will turn back to non manual mode into Home-Assistant. But if you look closer, the TRV will turn back to manual. The reason is that I don't use TRV "Automatic" mode with planning, I decided to use Home-Assistant planning instead.
 
-The "Holidays" mode on my TRV is not yet used, but will probably be to say "The room is no more used, keep it on Eco T°"
+The "Holidays" mode on TRV is used to say "The room is no more used, keep it on Eco T°". Switching to another TRV mode will indicate the room is used.
 
 ## Blueprints
 
@@ -110,6 +110,8 @@ This blueprint compute the correct setpoint based on the room schedule and the p
 [![Open your Home Assistant instance and show the blueprint import dialog with a specific blueprint pre-filled.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Ffrancois09%2FHA_BP_heating%2Fblob%2Fmain%2Fheater_switch_mode.yaml)
 
 This blueprint take into account a manual change on the Climate valve, or the Auto setting to modify setpoint.
+
+It also uses the "holiday" mode to indicate if the room is not occupied and must be continuously in Eco mode.
 
 ### Room link status
 
