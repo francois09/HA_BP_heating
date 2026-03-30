@@ -34,6 +34,12 @@ blueprint:
       selector:
         entity:
           domain: timer
+    override_timer:
+      name: Timer to trigger reset to automated management
+      description: Timer to wait before resetting to automated T°
+      selector:
+        entity:
+          domain: timer
     debounce_boolean:
       name: Debounce valve update
       description: Room debounce boolean flag
@@ -43,6 +49,12 @@ blueprint:
     occupancy_boolean:
       name: Occupancy mode
       description: Indicating if the room is occupied or no
+      selector:
+        entity:
+          domain: input_boolean
+    active_boolean:
+      name: Active for automation
+      description: Room activation status
       selector:
         entity:
           domain: input_boolean
@@ -64,6 +76,10 @@ trigger:
 - platform: state
   entity_id: !input climate_valve
   attribute: temperature
+- platform: state
+  entity_id: !input override_timer
+  to: idle
+  id: TriggeredByOverrideReset
 
 condition:
   - condition: state
@@ -84,7 +100,7 @@ action:
     sequence:
       - service: timer.start
         data:
-          duration: '0:00:03'
+          duration: '0:00:05'
         target:
           entity_id: !input selector_timer
 
@@ -101,6 +117,30 @@ action:
       data: {}
       target:
         entity_id: !input debounce_boolean
+
+  #### When override timer is Ok, it's time to reset to automated management
+  - conditions:
+    - condition: trigger
+      id:
+        - TriggeredByOverrideReset
+    - condition: state
+      entity_id: !input active_boolean
+      state: 'on'
+    ### - condition: #### Value above normal value
+    sequence:
+    - service: input_boolean.turn_off
+      data: {}
+      target:
+        entity_id: !input manual_boolean
+    - service: climate.set_preset_mode
+      data:
+        preset_mode: auto
+      target:
+        entity_id: !input climate_valve
+    # - service: input_number.set_value
+    #   data_template:
+    #     value: "{% set temp = state_attr(local_climate_valve,'temperature')|float %}{{ temp }}"
+    #     entity_id: !input selected_temp
 
   #### When timer is Ok, it's time to collect selected T° and turn flag to manual
   - conditions:
@@ -124,6 +164,11 @@ action:
       data: {}
       target:
         entity_id: !input occupancy_boolean
+    - service: timer.start
+      data:
+        duration: '6:00:00'
+      target:
+        entity_id: !input override_timer
 
   #### When auto mode selected, set debounce and re-send manual to valve
   - conditions:

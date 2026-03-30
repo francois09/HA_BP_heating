@@ -50,6 +50,7 @@ Debounce|RW|Boolean|Avoiding race conditions on starting/setup climate valve
 Used|RO|Boolean|Indicating the room (mostly bedrooms) are subject to planning. If not, T° is always set to Eco
 Linked|RW|List (Inside, Outside, Both, None)|Indicating how room is connected to the house or the outside
 Selector timer|RW|Timer|Wait until manual T° is selected. Manually selection send too much messages.
+Override timer|RW|Timer|When manual T° is selected, wait before resetting to automated value
 Active|RO|Boolean|Indicating the room is able to request heating. If off, no heat can be request, only valve changes allowed.
 
 #### Global helpers
