@@ -197,6 +197,10 @@ action:
       data: {}
       target:
         entity_id: !input occupancy_boolean
+    - service: timer.cancel
+      data: {}
+      target:
+        entity_id: !input override_timer
 
   #### When holiday mode selected, set debounce and re-send manual to valve
   - conditions:
@@ -221,3 +225,7 @@ action:
       data: {}
       target:
         entity_id: !input occupancy_boolean
+    - service: timer.cancel
+      data: {}
+      target:
+        entity_id: !input override_timer
