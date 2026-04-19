@@ -97,6 +97,8 @@ action:
         - condition: trigger
           id:
             - TriggeredByTimer
+            - TriggeredByOverrideReset
+          match: any
     sequence:
       - service: timer.start
         data:
@@ -137,10 +139,6 @@ action:
         preset_mode: auto
       target:
         entity_id: !input climate_valve
-    # - service: input_number.set_value
-    #   data_template:
-    #     value: "{% set temp = state_attr(local_climate_valve,'temperature')|float %}{{ temp }}"
-    #     entity_id: !input selected_temp
 
   #### When timer is Ok, it's time to collect selected T° and turn flag to manual
   - conditions:
