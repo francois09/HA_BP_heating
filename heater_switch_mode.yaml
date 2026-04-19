@@ -94,11 +94,13 @@ action:
   - conditions:
     - condition: not
       conditions:
-        - condition: trigger
-          id:
-            - TriggeredByTimer
-            - TriggeredByOverrideReset
-          match: any
+        - or:
+          - condition: trigger
+            id:
+              - TriggeredByTimer
+          - condition: trigger
+            id:
+              - TriggeredByOverrideReset
     sequence:
       - service: timer.start
         data:
