@@ -134,6 +134,10 @@ action:
       data: {}
       target:
         entity_id: !input manual_boolean
+    - service: input_boolean.turn_on
+      data: {}
+      target:
+        entity_id: !input debounce_boolean
     - service: climate.set_preset_mode
       data:
         preset_mode: auto
