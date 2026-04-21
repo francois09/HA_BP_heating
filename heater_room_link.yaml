@@ -155,6 +155,15 @@ action:
       entity_id: !input outside_aperture_sensor
       state: 'on'
     sequence:
+    - service: climate.set_temperature
+      data_template:
+        temperature: '5'
+        entity_id: !input climate_valve
+    - delay:
+        hours: 0
+        minutes: 1
+        seconds: 0
+        milliseconds: 0
     - service: climate.turn_off
       data: {}
       target:

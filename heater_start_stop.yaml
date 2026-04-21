@@ -61,6 +61,9 @@ trigger:
 
 action:
 - choose:
+##
+## Turn On heating system
+##
   - conditions:
     - condition: state
       entity_id: !input winter_mode_boolean
@@ -111,11 +114,23 @@ action:
       target:
         entity_id: !input request_automation
 
+##
+## Turn Off heating system
+##
   - conditions:
     - condition: state
       entity_id: !input winter_mode_boolean
       state: 'off'
     sequence:
+    - service: climate.set_temperature
+      data_template:
+        temperature: '5'
+        entity_id: !input climate_valve
+    - delay:
+        hours: 0
+        minutes: 1
+        seconds: 0
+        milliseconds: 0
     - service: climate.turn_off
       data: {}
       target:
