@@ -64,6 +64,7 @@ max_exceeded: silent
 
 variables:
   local_climate_valve: !input climate_valve
+  local_selected_temp: !input selected_temp
 
 trigger:
 - platform: state
@@ -146,7 +147,7 @@ action:
       target:
         entity_id: !input climate_valve
 
-  #### When timer is Ok, it's time to collect selected T° and turn flag to manual
+  #### When timer is Ok, it's time to collect selected T° and turn flag to manual, but only if there is a temp change.
   - conditions:
     - condition: trigger
       id:
@@ -155,6 +156,12 @@ action:
       entity_id: !input climate_valve
       attribute: preset_mode
       state: manual
+    - condition:
+        - not:
+            - condition: state
+              entity_id: !input climate_valve
+              attribute: temperature
+              state: "{{ states(local_selected_temp) }}"
     sequence:
     - service: input_boolean.turn_on
       data: {}
