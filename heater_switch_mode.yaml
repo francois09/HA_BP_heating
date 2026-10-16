@@ -156,13 +156,15 @@ action:
       entity_id: !input climate_valve
       attribute: preset_mode
       state: manual
-    - condition:
-        - not:
-            - condition: numeric_state
-              entity_id: !input climate_valve
-              attribute: temperature
-              above: local_selected_temp
-              below: local_selected_temp
+    - or:
+      - condition: numeric_state
+        entity_id: !input climate_valve
+        attribute: temperature
+        below: !input selected_temp
+      - condition: numeric_state
+        entity_id: !input climate_valve
+        attribute: temperature
+        above: !input selected_temp
     sequence:
     - service: input_boolean.turn_on
       data: {}
