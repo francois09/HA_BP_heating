@@ -158,10 +158,11 @@ action:
       state: manual
     - condition:
         - not:
-            - condition: state
+            - condition: numeric_state
               entity_id: !input climate_valve
               attribute: temperature
-              state: "{{ states(local_selected_temp) }}"
+              above: "{{ states(local_selected_temp) }}"
+              below: "{{ states(local_selected_temp) }}"
     sequence:
     - service: input_boolean.turn_on
       data: {}
